@@ -114,6 +114,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jLabelNomJ = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuUsers = new javax.swing.JMenu();
+        jMenuItemLogin = new javax.swing.JMenuItem();
         jMenuConnexions = new javax.swing.JMenu();
         jMenuRech = new javax.swing.JMenu();
         jMenuAide = new javax.swing.JMenu();
@@ -206,6 +207,15 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jButtonSend.setText("Envoyer message");
 
         jMenuUsers.setText("Utilisateurs");
+
+        jMenuItemLogin.setText("Login");
+        jMenuItemLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemLoginActionPerformed(evt);
+            }
+        });
+        jMenuUsers.add(jMenuItemLogin);
+
         jMenuBar1.add(jMenuUsers);
 
         jMenuConnexions.setText("Connexions");
@@ -318,10 +328,10 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jRadioButtonInter)
-                                    .addComponent(jRadioButtonPolitique)
-                                    .addComponent(jRadioButtonSports)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jRadioButtonInter, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jRadioButtonPolitique, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jRadioButtonSports, javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jRadioButtonRagot))
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -360,6 +370,10 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     private void jButtonLireActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLireActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonLireActionPerformed
+
+    private void jMenuItemLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLoginActionPerformed
+        new Login(this).setVisible(true);
+    }//GEN-LAST:event_jMenuItemLoginActionPerformed
 
     /**
      * @param args the command line arguments
@@ -420,6 +434,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     private javax.swing.JMenu jMenuAide;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMenuConnexions;
+    private javax.swing.JMenuItem jMenuItemLogin;
     private javax.swing.JMenu jMenuRech;
     private javax.swing.JMenu jMenuUsers;
     private javax.swing.JRadioButton jRadioButtonInter;

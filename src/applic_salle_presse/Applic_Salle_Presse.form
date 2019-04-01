@@ -8,6 +8,16 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Utilisateurs"/>
           </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemLogin">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Login"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemLoginActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuConnexions">
           <Properties>
@@ -169,11 +179,11 @@
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="1" attributes="0">
-                              <Group type="103" groupAlignment="3" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jRadioButtonInter" alignment="1" min="-2" max="-2" attributes="0"/>
                                   <Component id="jRadioButtonPolitique" alignment="1" min="-2" max="-2" attributes="0"/>
                                   <Component id="jRadioButtonSports" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jRadioButtonRagot" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jRadioButtonRagot" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
