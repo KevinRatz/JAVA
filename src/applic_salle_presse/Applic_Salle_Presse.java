@@ -22,7 +22,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
      */
     public Applic_Salle_Presse() {
         initComponents();
-        setTitle("\"Le clairon rapporteur\" - Le journal de l'élite qui aime savoir test");
+        setTitle("\"Le clairon rapporteur\" - Le journal de l'élite qui aime savoir");
         
         
         JMenuItem jMenuItemParamDate = new JMenuItem("Paramètres date");
