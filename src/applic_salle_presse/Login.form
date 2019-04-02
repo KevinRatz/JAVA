@@ -40,13 +40,13 @@
                       </Group>
                       <EmptySpace min="-2" pref="97" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="jTextServeur" pref="100" max="32767" attributes="0"/>
+                          <Component id="jTextLogin" pref="100" max="32767" attributes="0"/>
                           <Component id="jTextMdp" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="80" max="-2" attributes="0"/>
-                      <Component id="jLabelDate" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabelwelcome" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace pref="60" max="32767" attributes="0"/>
@@ -57,11 +57,11 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace pref="50" max="32767" attributes="0"/>
-              <Component id="jLabelDate" min="-2" max="-2" attributes="0"/>
+              <Component id="jLabelwelcome" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                  <Component id="jTextServeur" min="-2" max="-2" attributes="0"/>
+                  <Component id="jTextLogin" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -105,24 +105,21 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonOkActionPerformed"/>
       </Events>
     </Component>
-    <Component class="java.awt.TextField" name="jTextServeur">
+    <Component class="java.awt.TextField" name="jTextLogin">
       <Properties>
         <Property name="name" type="java.lang.String" value="" noResource="true"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextServeurActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextLoginActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabelDate">
+    <Component class="javax.swing.JLabel" name="jLabelwelcome">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="36" style="1"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Bienvenue !"/>
       </Properties>
-      <Events>
-        <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="jLabelDatePropertyChange"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JPasswordField" name="jTextMdp">
       <Events>

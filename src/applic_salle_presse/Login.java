@@ -9,7 +9,6 @@ package applic_salle_presse;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.swing.*;
 
@@ -24,10 +23,8 @@ public class Login extends javax.swing.JFrame {
      */
     
     public JPasswordField passwordField = new JPasswordField(20);
-    static Hashtable m = new Hashtable();
-    private String serveur;
-    //private Serveur login;
-    String Date;
+    static Hashtable<String,String> m = new Hashtable<String,String>();
+    private String login;
     
     public Applic_Salle_Presse app;
     public Login() {
@@ -37,9 +34,9 @@ public class Login extends javax.swing.JFrame {
     {
         initComponents();
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        m.put("dimitri","dimitri");
-        m.put("alice","alice");
-        m.put("bruno","bruno");
+        m.put("lopezdimitri","ld01");
+        m.put("dupuisalix","da02");
+        m.put("alexispierre","ap03");
         this.app=app;
     }
     /**
@@ -55,8 +52,8 @@ public class Login extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jButtonAnnuler = new javax.swing.JButton();
         jButtonOk = new javax.swing.JButton();
-        jTextServeur = new java.awt.TextField();
-        jLabelDate = new javax.swing.JLabel();
+        jTextLogin = new java.awt.TextField();
+        jLabelwelcome = new javax.swing.JLabel();
         jTextMdp = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -80,20 +77,15 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        jTextServeur.setName(""); // NOI18N
-        jTextServeur.addActionListener(new java.awt.event.ActionListener() {
+        jTextLogin.setName(""); // NOI18N
+        jTextLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextServeurActionPerformed(evt);
+                jTextLoginActionPerformed(evt);
             }
         });
 
-        jLabelDate.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
-        jLabelDate.setText("Bienvenue !");
-        jLabelDate.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                jLabelDatePropertyChange(evt);
-            }
-        });
+        jLabelwelcome.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        jLabelwelcome.setText("Bienvenue !");
 
         jTextMdp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -119,22 +111,22 @@ public class Login extends javax.swing.JFrame {
                             .addComponent(jLabel1))
                         .addGap(97, 97, 97)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextServeur, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                            .addComponent(jTextLogin, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
                             .addComponent(jTextMdp)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(80, 80, 80)
-                        .addComponent(jLabelDate)))
+                        .addComponent(jLabelwelcome)))
                 .addContainerGap(60, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(50, Short.MAX_VALUE)
-                .addComponent(jLabelDate)
+                .addComponent(jLabelwelcome)
                 .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addComponent(jTextServeur, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -149,67 +141,39 @@ public class Login extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextServeurActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextServeurActionPerformed
+    private void jTextLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextLoginActionPerformed
         
-    }//GEN-LAST:event_jTextServeurActionPerformed
+    }//GEN-LAST:event_jTextLoginActionPerformed
 
     private void jButtonOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOkActionPerformed
         
-        serveur = jTextServeur.getText();
+        login = jTextLogin.getText();
         String passwd = new String(jTextMdp.getPassword());
         int trouve=0;
-        try
-        {
-            String separator  = System.getProperty("file.separator");
-            String home=System.getProperty("user.dir");
-            String chemin = home+separator+"src"+separator+"applicationsalle"+separator+"Serveurs.properties";
-            
-            FileInputStream in = new FileInputStream(chemin);
-            Properties props = new Properties();
-            props.load(in);
-            Enumeration<?> e = props.propertyNames();
-            while (e.hasMoreElements()) {
-                    String key = (String) e.nextElement();
-                    if(serveur.equals(key) && passwd.equals(key))
-                        trouve=1;
+        
+        for (Map.Entry<String,String> item : m.entrySet()) {
+            if (login.equals(item.getKey())&&passwd.equals(item.getValue())) {
+                //setnom = item.getKey();
+                trouve=1;
             }
-            in.close();
-        }
-        catch (FileNotFoundException e) { 
-            System.out.println("Fichier de serveur non trouvé !"); 
-            this.dispose();
-        }
-        catch (IOException e) { 
-            System.out.println("Erreur : " + e.getMessage()); 
-            this.dispose();
         }
         
-        /*if(trouve==1)
+        if(trouve==1)
         {
-            login = new Serveur();
-            login.setLogin(serveur);
-            this.app.nameServ=serveur;
-            app.Traitement();
             this.setVisible(false);
         }
         else
         {
             JOptionPane.showMessageDialog(this, "Nom du serveur ou du mot de passe erroné!", "Information", JOptionPane.INFORMATION_MESSAGE);
-        }*/
+        }
     }//GEN-LAST:event_jButtonOkActionPerformed
 
     private void jTextMdpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextMdpActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextMdpActionPerformed
 
-    private void jLabelDatePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jLabelDatePropertyChange
-        Date = new SimpleDateFormat("EEEE dd/M/yyyy hh:mm",
-        Locale.FRANCE).format(new Date());
-        jLabelDate.setText(Date);
-    }//GEN-LAST:event_jLabelDatePropertyChange
-
     private void jButtonAnnulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnnulerActionPerformed
-        jTextServeur.setText("");
+        jTextLogin.setText("");
         jTextMdp.setText("");
     }//GEN-LAST:event_jButtonAnnulerActionPerformed
 
@@ -254,8 +218,8 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JButton jButtonOk;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabelDate;
+    private javax.swing.JLabel jLabelwelcome;
+    private java.awt.TextField jTextLogin;
     private javax.swing.JPasswordField jTextMdp;
-    private java.awt.TextField jTextServeur;
     // End of variables declaration//GEN-END:variables
 }
