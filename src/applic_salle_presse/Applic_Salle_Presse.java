@@ -57,6 +57,8 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                         null, options, options[1]);
             }
         });
+        JMenuItem jMenuItemLog = new JMenuItem("Afficher le log");
+        jMenuAide.add(jMenuItemLog);
         JPopupMenu.Separator jSeparator = new JPopupMenu.Separator();
         jMenuAide.add(jSeparator);
         JMenuItem jMenuItemAPropos = new JMenuItem("A propos de ...");
@@ -72,6 +74,12 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
             }
         });
         jMenuAide.add(jMenuItemAPropos);
+        Date aujourdhui = new Date();
+        DateFormat shortDateFormat = DateFormat.getDateInstance(
+                        DateFormat.SHORT);
+        jLabelDate.setText(shortDateFormat.format(aujourdhui));
+        java.net.URL imageURL = this.getClass().getResource("black_diamond.png");
+        jMenuItemStartReception.setIcon(new ImageIcon(imageURL));
     }
 
     /**
@@ -112,11 +120,25 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jButtonSend = new javax.swing.JButton();
         jLabelNomJ = new javax.swing.JLabel();
+        jLabelDate = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuUsers = new javax.swing.JMenu();
         jMenuItemLogin = new javax.swing.JMenuItem();
+        jMenuItemLogout = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        jMenuItemNew = new javax.swing.JMenuItem();
+        jMenuItemListe = new javax.swing.JMenuItem();
         jMenuConnexions = new javax.swing.JMenu();
+        jMenuItemStartReception = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
         jMenuRech = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
+        jSeparator4 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem6 = new javax.swing.JMenuItem();
         jMenuAide = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -216,12 +238,48 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         });
         jMenuUsers.add(jMenuItemLogin);
 
+        jMenuItemLogout.setText("Logout");
+        jMenuUsers.add(jMenuItemLogout);
+        jMenuUsers.add(jSeparator2);
+
+        jMenuItemNew.setText("Nouveau");
+        jMenuUsers.add(jMenuItemNew);
+
+        jMenuItemListe.setText("Liste");
+        jMenuUsers.add(jMenuItemListe);
+
         jMenuBar1.add(jMenuUsers);
 
         jMenuConnexions.setText("Connexions");
+
+        jMenuItemStartReception.setText("Démarrer réceptions");
+        jMenuItemStartReception.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jMenuConnexions.add(jMenuItemStartReception);
+
+        jMenuItem2.setText("Arrêter réceptions");
+        jMenuConnexions.add(jMenuItem2);
+        jMenuConnexions.add(jSeparator3);
+
+        jMenuItem3.setText("Liste des ports");
+        jMenuConnexions.add(jMenuItem3);
+
+        jMenuItem4.setText("Liste des messages reçus");
+        jMenuConnexions.add(jMenuItem4);
+
         jMenuBar1.add(jMenuConnexions);
 
         jMenuRech.setText("Recherches");
+
+        jMenuItem1.setText("Par catégorie");
+        jMenuRech.add(jMenuItem1);
+
+        jMenuItem5.setText("Par mot clé");
+        jMenuRech.add(jMenuItem5);
+        jMenuRech.add(jSeparator4);
+
+        jMenuItem6.setText("News people");
+        jMenuRech.add(jMenuItem6);
+
         jMenuBar1.add(jMenuRech);
 
         jMenuAide.setText("Aide");
@@ -259,7 +317,9 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(178, 178, 178)
-                                        .addComponent(jLabel4))
+                                        .addComponent(jLabel4)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabelDate, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(224, 224, 224)
                                         .addComponent(jButtonTraiter))
@@ -311,7 +371,8 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel1)
-                                .addComponent(jLabel4))
+                                .addComponent(jLabel4)
+                                .addComponent(jLabelDate, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabelNomJ, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -426,6 +487,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabelDate;
     private javax.swing.JLabel jLabelNomJ;
     private javax.swing.JList<String> jListInter;
     private javax.swing.JList<String> jListPolitique;
@@ -434,7 +496,17 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     private javax.swing.JMenu jMenuAide;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMenuConnexions;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItemListe;
     private javax.swing.JMenuItem jMenuItemLogin;
+    private javax.swing.JMenuItem jMenuItemLogout;
+    private javax.swing.JMenuItem jMenuItemNew;
+    private javax.swing.JMenuItem jMenuItemStartReception;
     private javax.swing.JMenu jMenuRech;
     private javax.swing.JMenu jMenuUsers;
     private javax.swing.JRadioButton jRadioButtonInter;
@@ -446,6 +518,9 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
