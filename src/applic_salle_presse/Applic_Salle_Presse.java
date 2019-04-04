@@ -80,6 +80,10 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jLabelDate.setText(shortDateFormat.format(aujourdhui));
         java.net.URL imageURL = this.getClass().getResource("black_diamond.png");
         jMenuItemStartReception.setIcon(new ImageIcon(imageURL));
+        
+        /*journaliste = new Journaliste();
+        nameJour = journaliste.getLogin();
+        jLabelNomJ.setText(nameJour);*/
     }
 
     /**
