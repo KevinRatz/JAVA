@@ -6,6 +6,7 @@
 
 package applic_salle_presse;
 
+import java.awt.Font;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -23,7 +24,7 @@ public class Login extends javax.swing.JFrame {
      */
     
     public JPasswordField passwordField = new JPasswordField(20);
-    static Hashtable<String,String> m = new Hashtable<String,String>();
+    static Hashtable journaliste = new Hashtable();
     private String login;
     
     public Applic_Salle_Presse app;
@@ -33,10 +34,11 @@ public class Login extends javax.swing.JFrame {
     public Login(Applic_Salle_Presse app)
     {
         initComponents();
+        setTitle("\"Le clairon rapporteur\" - Le journal de l'élite qui aime savoir");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        m.put("lopezdimitri","ld01");
-        m.put("dupuisalix","da02");
-        m.put("alexispierre","ap03");
+        journaliste.put("lopezdimitri","ld");
+        journaliste.put("dupuisalix","da");
+        journaliste.put("alexispierre","ap");
         this.app=app;
     }
     /**
@@ -57,7 +59,6 @@ public class Login extends javax.swing.JFrame {
         jTextMdp = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Restaurant \"Le gourmet audacieux\"");
 
         jLabel1.setText("Nom d'utilisateur :");
 
@@ -149,22 +150,17 @@ public class Login extends javax.swing.JFrame {
         
         login = jTextLogin.getText();
         String passwd = new String(jTextMdp.getPassword());
-        int trouve=0;
         
-        for (Map.Entry<String,String> item : m.entrySet()) {
-            if (login.equals(item.getKey())&&passwd.equals(item.getValue())) {
-                //setnom = item.getKey();
-                trouve=1;
-            }
-        }
-        
-        if(trouve==1)
-        {
+        if (journaliste.containsKey(login)&&journaliste.containsValue(passwd)) {
+            
             this.setVisible(false);
         }
         else
         {
-            JOptionPane.showMessageDialog(this, "Nom du serveur ou du mot de passe erroné!", "Information", JOptionPane.INFORMATION_MESSAGE);
+            JLabel erreur = new JLabel("Erreur de login !!!");
+            erreur.setFont(new Font("Arial", Font.BOLD, 22));
+            java.net.URL image = this.getClass().getResource("BONHOMME_INTERDIT.jpg");
+            JOptionPane.showMessageDialog(this, erreur, "Erreur :( grr", JOptionPane.ERROR_MESSAGE,new ImageIcon(image));
         }
     }//GEN-LAST:event_jButtonOkActionPerformed
 
@@ -175,6 +171,7 @@ public class Login extends javax.swing.JFrame {
     private void jButtonAnnulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnnulerActionPerformed
         jTextLogin.setText("");
         jTextMdp.setText("");
+        this.setVisible(false);
     }//GEN-LAST:event_jButtonAnnulerActionPerformed
 
     /**
