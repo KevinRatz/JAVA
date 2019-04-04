@@ -328,7 +328,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                                         .addGap(224, 224, 224)
                                         .addComponent(jButtonTraiter))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGap(224, 224, 224)
+                                        .addGap(222, 222, 222)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jButtonSupp)
                                             .addComponent(jButtonAdd))))
