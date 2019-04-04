@@ -65,7 +65,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jMenuItemAPropos.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ev) {
                 JPanel panel = new JPanel();
-                JLabel JlabelNom = new JLabel("<html>Cette application a été dévelopée par : <br> Kevin Ratz <br> Maxime Troisfontaine <br> Date : 31-03-2019.</html>");
+                JLabel JlabelNom = new JLabel("<html> Cette application a été dévelopée par : <br> Kevin Ratz <br> Maxime Troisfontaine <br> Date : 31-03-2019.</html>");
                 panel.add(JlabelNom);
                 String[] options = new String[]{"OK"};
                 JOptionPane.showOptionDialog(null, panel, "A propos de cette application",
