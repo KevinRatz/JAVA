@@ -5,8 +5,12 @@
  */
 package applic_salle_presse;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Component;
+import java.awt.Dialog.ModalityType;
+import java.awt.Dimension;
+import java.awt.PopupMenu;
+import java.awt.Toolkit;
+import java.awt.event.*;
 import java.text.DateFormat;
 import java.util.*;
 import javax.swing.*;
@@ -20,11 +24,19 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     /**
      * Creates new form Applic_Salle_Presses
      */
+    
+    private Journaliste nomJ;
+    static Hashtable htNews = new Hashtable();
+    
     public Applic_Salle_Presse() {
         initComponents();
         setTitle("\"Le clairon rapporteur\" - Le journal de l'élite qui aime savoir");
         
+        // centrer fenetre
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
         
+        //Parametre date
         JMenuItem jMenuItemParamDate = new JMenuItem("Paramètres date");
         jMenuAide.add(jMenuItemParamDate);
         jMenuItemParamDate.addActionListener(new ActionListener() {
@@ -57,6 +69,8 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                         null, options, options[1]);
             }
         });
+        
+        //Menu aide
         JMenuItem jMenuItemLog = new JMenuItem("Afficher le log");
         jMenuAide.add(jMenuItemLog);
         JPopupMenu.Separator jSeparator = new JPopupMenu.Separator();
@@ -80,10 +94,24 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jLabelDate.setText(shortDateFormat.format(aujourdhui));
         java.net.URL imageURL = this.getClass().getResource("black_diamond.png");
         jMenuItemStartReception.setIcon(new ImageIcon(imageURL));
+                
+        String[] matieres = {"Informatique", "Mécanique", "Gestion", "Electricité"};
+        jComboBoxNews.addItem(matieres[0]);
+        jComboBoxNews.addItem(matieres[1]);
+        jComboBoxNews.addItem(matieres[2]);
+        jComboBoxNews.addItem(matieres[3]);
         
-        /*journaliste = new Journaliste();
-        nameJour = journaliste.getLogin();
-        jLabelNomJ.setText(nameJour);*/
+        // grouper radiobutton
+        ButtonGroup buttonGroupPreferences = new ButtonGroup();
+        buttonGroupPreferences.add(jRadioButtonInter);
+        buttonGroupPreferences.add(jRadioButtonPolitique);
+        buttonGroupPreferences.add(jRadioButtonRagot);
+        buttonGroupPreferences.add(jRadioButtonSports);
+        
+        
+        htNews.put("Informatique","Info-Informatique-IT");
+        htNews.put("Mécanique","Meca-Mecanique");
+        htNews.put("Information","Info/Information");
     }
 
     /**
@@ -139,10 +167,10 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuRech = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItemRechCat = new javax.swing.JMenuItem();
+        jMenuItemRechMotCle = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem6 = new javax.swing.JMenuItem();
+        jMenuItemNewsPeople = new javax.swing.JMenuItem();
         jMenuAide = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -151,15 +179,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
 
         jLabel2.setText("News reçues :");
 
-        jComboBoxNews.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jLabel3.setText("Ajouter news : ");
-
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
 
         jLabel4.setText("Nous sommes le :");
 
@@ -173,19 +193,10 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jButtonAdd.setText("Ajouter");
 
         jButtonSupp.setText("Supprimer");
-        jButtonSupp.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonSuppActionPerformed(evt);
-            }
-        });
 
         jRadioButtonInter.setText("Internationales");
 
-        jListInter.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
+        jListInter.setToolTipText("");
         jScrollPane1.setViewportView(jListInter);
 
         jRadioButtonPolitique.setText("Vie politique");
@@ -194,25 +205,10 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
 
         jRadioButtonRagot.setText("Ragot et potins");
 
-        jListPolitique.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane2.setViewportView(jListPolitique);
 
-        jListSports.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane3.setViewportView(jListSports);
 
-        jListRagot.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane4.setViewportView(jListRagot);
 
         jButtonEdit.setText("Editer");
@@ -220,11 +216,6 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jCheckBoxNews.setText("News reçue !");
 
         jButtonLire.setText("Lire la news");
-        jButtonLire.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonLireActionPerformed(evt);
-            }
-        });
 
         jButtonConfRecep.setText("Confirmer réception");
 
@@ -243,6 +234,11 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jMenuUsers.add(jMenuItemLogin);
 
         jMenuItemLogout.setText("Logout");
+        jMenuItemLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemLogoutActionPerformed(evt);
+            }
+        });
         jMenuUsers.add(jMenuItemLogout);
         jMenuUsers.add(jSeparator2);
 
@@ -274,15 +270,20 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
 
         jMenuRech.setText("Recherches");
 
-        jMenuItem1.setText("Par catégorie");
-        jMenuRech.add(jMenuItem1);
+        jMenuItemRechCat.setText("Par catégorie");
+        jMenuRech.add(jMenuItemRechCat);
 
-        jMenuItem5.setText("Par mot clé");
-        jMenuRech.add(jMenuItem5);
+        jMenuItemRechMotCle.setText("Par mot clé");
+        jMenuItemRechMotCle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemRechMotCleActionPerformed(evt);
+            }
+        });
+        jMenuRech.add(jMenuItemRechMotCle);
         jMenuRech.add(jSeparator4);
 
-        jMenuItem6.setText("News people");
-        jMenuRech.add(jMenuItem6);
+        jMenuItemNewsPeople.setText("News people");
+        jMenuRech.add(jMenuItemNewsPeople);
 
         jMenuBar1.add(jMenuRech);
 
@@ -307,41 +308,37 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jTextField1)
                             .addComponent(jComboBoxNews, 0, 150, Short.MAX_VALUE)
-                            .addComponent(jLabelNomJ, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabelNomJ, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(39, 39, 39)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(46, 46, 46)
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(27, 27, 27))
+                                .addGap(178, 178, 178)
+                                .addComponent(jLabel4)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabelDate, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
+                                .addGap(224, 224, 224)
+                                .addComponent(jButtonTraiter))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(224, 224, 224)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(178, 178, 178)
-                                        .addComponent(jLabel4)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jLabelDate, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(224, 224, 224)
-                                        .addComponent(jButtonTraiter))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(224, 224, 224)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jButtonSupp)
-                                            .addComponent(jButtonAdd))))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                    .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jButtonSupp)
+                                    .addComponent(jButtonAdd)
+                                    .addComponent(jRadioButtonSports))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jRadioButtonInter)
                         .addGap(115, 115, 115)
                         .addComponent(jRadioButtonPolitique)
-                        .addGap(97, 97, 97)
-                        .addComponent(jRadioButtonSports)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jRadioButtonRagot)
-                        .addGap(54, 54, 54))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(253, 253, 253)
+                                .addComponent(jRadioButtonRagot))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(72, 72, 72)
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(27, 27, 27))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButtonEdit)
@@ -351,7 +348,9 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(29, 29, 29)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(62, 62, 62)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(94, 94, 94)
                         .addComponent(jCheckBoxNews)
@@ -392,17 +391,16 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                         .addComponent(jButtonSupp)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jRadioButtonInter, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jRadioButtonPolitique, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jRadioButtonSports, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jRadioButtonRagot))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jRadioButtonInter, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jRadioButtonPolitique, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jRadioButtonRagot)
+                                .addComponent(jRadioButtonSports)))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane2)
+                            .addComponent(jScrollPane1)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(34, 34, 34)
                 .addComponent(jButtonEdit)
                 .addGap(18, 18, 18)
@@ -420,25 +418,91 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
-    private void jButtonSuppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSuppActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonSuppActionPerformed
-
+    public void Traitement()
+    {
+        //nomJ = new Journaliste();
+        //jLabelNomJ.setText(nomJ);//.getJournaliste());
+    }
+    
+    
     private void jButtonTraiterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTraiterActionPerformed
-        // TODO add your handling code here:
+        JDialogTraitementNews jdtn =  new JDialogTraitementNews(this, rootPaneCheckingEnabled);
+        jdtn.setModalityType(ModalityType.APPLICATION_MODAL);
+        jdtn.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        jdtn.setVisible(true);
+        
+        /*JOptionPane.showConfirmDialog(null, options,
+                "Don't forget to Tick it!",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+*/
     }//GEN-LAST:event_jButtonTraiterActionPerformed
 
-    private void jButtonLireActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLireActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonLireActionPerformed
-
     private void jMenuItemLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLoginActionPerformed
-        new Login(this).setVisible(true);
+        LoginJDialog l =  new LoginJDialog(this,rootPaneCheckingEnabled);
+        l.setModalityType(ModalityType.APPLICATION_MODAL);
+        l.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        l.setVisible(true);
+        jLabelNomJ.setText(l.nomJ.getJournaliste());
     }//GEN-LAST:event_jMenuItemLoginActionPerformed
+
+    private void jMenuItemLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLogoutActionPerformed
+        jLabelNomJ.setText("");
+        Vector vDefauts = new Vector();
+        jListInter.setListData(vDefauts);
+        jListPolitique.setListData(vDefauts);
+        jListRagot.setListData(vDefauts);
+        jListSports.setListData(vDefauts);
+    }//GEN-LAST:event_jMenuItemLogoutActionPerformed
+
+    private void jMenuItemRechMotCleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRechMotCleActionPerformed
+        String mcDialog = JOptionPane.showInputDialog("Rechercher une news par un mot clé :");
+        if(!mcDialog.equals(""))
+        {
+            String[] splitmot;
+            ArrayList listNews = new ArrayList();
+            for(Object item : htNews.keySet()){
+                splitmot=htNews.get(item).toString().split("[-\\/]");
+                for (String splitmot1 : splitmot) {
+                    if (splitmot1.equals(mcDialog)) {
+                        listNews.add(item);
+                        break;
+                    }
+                }
+            }
+            if(!listNews.isEmpty())
+            {
+                JList list = new JList(listNews.toArray());
+                JDialog waitDialog = new JDialog( this, "Paused", true );
+                waitDialog.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE);
+                
+                list.addMouseListener(new MouseAdapter() {
+                    public void mouseClicked(MouseEvent me) {
+                       if (me.getClickCount() == 2) {
+                           Object news = list.getSelectedValue();
+                           Object[] message = { "Détail de la news recherchée :", news };
+                            JOptionPane.showMessageDialog(
+                                null, message, "Liste des news recherchées",JOptionPane.YES_OPTION);
+                       }
+                    }
+                 });
+                
+                waitDialog.getContentPane().add( list );
+                waitDialog.pack();
+                Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+                waitDialog.setLocation(dim.width/2-waitDialog.getSize().width/2, dim.height/2-waitDialog.getSize().height/2);
+                waitDialog.setVisible(true);
+                
+                
+                Object[] options = {""};
+                        // On utilise showOptionDialog(), qui propose l'interface la plus complète :
+                
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(this, "Aucune news trouvées");
+            }
+        }
+    }//GEN-LAST:event_jMenuItemRechMotCleActionPerformed
 
     /**
      * @param args the command line arguments
@@ -500,16 +564,16 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     private javax.swing.JMenu jMenuAide;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMenuConnexions;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItemListe;
     private javax.swing.JMenuItem jMenuItemLogin;
     private javax.swing.JMenuItem jMenuItemLogout;
     private javax.swing.JMenuItem jMenuItemNew;
+    private javax.swing.JMenuItem jMenuItemNewsPeople;
+    private javax.swing.JMenuItem jMenuItemRechCat;
+    private javax.swing.JMenuItem jMenuItemRechMotCle;
     private javax.swing.JMenuItem jMenuItemStartReception;
     private javax.swing.JMenu jMenuRech;
     private javax.swing.JMenu jMenuUsers;
