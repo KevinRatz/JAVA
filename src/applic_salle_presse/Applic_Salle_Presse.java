@@ -25,7 +25,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
      * Creates new form Applic_Salle_Presses
      */
     
-    private Journaliste nomJ;
+    private News newNews;
     static Hashtable htNews = new Hashtable();
     
     public Applic_Salle_Presse() {
@@ -35,40 +35,6 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         // centrer fenetre
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
-        
-        //Parametre date
-        JMenuItem jMenuItemParamDate = new JMenuItem("Paramètres date");
-        jMenuAide.add(jMenuItemParamDate);
-        jMenuItemParamDate.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ev) {
-                Date aujourdhui = new Date();
-                DateFormat shortDateFormat = DateFormat.getDateTimeInstance(
-                        DateFormat.SHORT,
-                        DateFormat.SHORT);
-                DateFormat mediumDateFormat = DateFormat.getDateTimeInstance(
-                        DateFormat.MEDIUM,
-                        DateFormat.MEDIUM);
-                DateFormat longDateFormat = DateFormat.getDateTimeInstance(
-                        DateFormat.LONG,
-                        DateFormat.LONG);
-                DateFormat fullDateFormat = DateFormat.getDateTimeInstance(
-                        DateFormat.FULL,
-                        DateFormat.FULL);
-                JPanel panel = new JPanel();
-                JLabel JlabelNom = new JLabel("Choisissez le nouvel affichage de la date et heure :");
-                JComboBox<String> combobox = new JComboBox<String>();
-                combobox.addItem(shortDateFormat.format(aujourdhui));
-                combobox.addItem(mediumDateFormat.format(aujourdhui));
-                combobox.addItem(longDateFormat.format(aujourdhui));
-                combobox.addItem(fullDateFormat.format(aujourdhui));
-                panel.add(JlabelNom);
-                panel.add(combobox);
-                String[] options = new String[]{"OK", "Annuler"};
-                JOptionPane.showOptionDialog(null, panel, "Parametre date-heure",
-                        0, JOptionPane.PLAIN_MESSAGE,
-                        null, options, options[1]);
-            }
-        });
         
         //Menu aide
         JMenuItem jMenuItemLog = new JMenuItem("Afficher le log");
@@ -88,10 +54,11 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
             }
         });
         jMenuAide.add(jMenuItemAPropos);
+        
         Date aujourdhui = new Date();
-        DateFormat shortDateFormat = DateFormat.getDateInstance(
-                        DateFormat.SHORT);
-        jLabelDate.setText(shortDateFormat.format(aujourdhui));
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT);
+        jLabelDate.setText(dateFormat.format(aujourdhui));
+        
         java.net.URL imageURL = this.getClass().getResource("black_diamond.png");
         jMenuItemStartReception.setIcon(new ImageIcon(imageURL));
                 
@@ -111,7 +78,8 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         
         htNews.put("Informatique","Info-Informatique-IT");
         htNews.put("Mécanique","Meca-Mecanique");
-        htNews.put("Information","Info/Information");
+        htNews.put("coucou","Info/Information");
+        newNews = new News("coucou","le coucou dit bonjour");
     }
 
     /**
@@ -172,6 +140,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
         jMenuItemNewsPeople = new javax.swing.JMenuItem();
         jMenuAide = new javax.swing.JMenu();
+        jMenuParamDate = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -288,6 +257,15 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jMenuBar1.add(jMenuRech);
 
         jMenuAide.setText("Aide");
+
+        jMenuParamDate.setText("Paramètres date");
+        jMenuParamDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuParamDateActionPerformed(evt);
+            }
+        });
+        jMenuAide.add(jMenuParamDate);
+
         jMenuBar1.add(jMenuAide);
 
         setJMenuBar(jMenuBar1);
@@ -314,17 +292,20 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                                 .addGap(178, 178, 178)
                                 .addComponent(jLabel4)
                                 .addGap(18, 18, 18)
-                                .addComponent(jLabelDate, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabelDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(224, 224, 224)
-                                .addComponent(jButtonTraiter))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(224, 224, 224)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jButtonSupp)
-                                    .addComponent(jButtonAdd)
-                                    .addComponent(jRadioButtonSports))))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(224, 224, 224)
+                                        .addComponent(jButtonTraiter))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(224, 224, 224)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jButtonSupp)
+                                            .addComponent(jButtonAdd)
+                                            .addComponent(jRadioButtonSports))))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jRadioButtonInter)
                         .addGap(115, 115, 115)
@@ -442,7 +423,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         l.setModalityType(ModalityType.APPLICATION_MODAL);
         l.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         l.setVisible(true);
-        jLabelNomJ.setText(l.nomJ.getJournaliste());
+        jLabelNomJ.setText(l.login);
     }//GEN-LAST:event_jMenuItemLoginActionPerformed
 
     private void jMenuItemLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLogoutActionPerformed
@@ -469,33 +450,44 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                     }
                 }
             }
+            Vector BDNews = new Vector();
+            BDNews.add(newNews);
+            BDNews.add(new News("Informatique","Steve Jobs ce héros"));
+            
             if(!listNews.isEmpty())
             {
                 JList list = new JList(listNews.toArray());
-                JDialog waitDialog = new JDialog( this, "Paused", true );
-                waitDialog.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE);
+                JDialog listDialog = new JDialog( this, "Liste des news", true );
+                listDialog.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE);
                 
                 list.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent me) {
                        if (me.getClickCount() == 2) {
-                           Object news = list.getSelectedValue();
-                           Object[] message = { "Détail de la news recherchée :", news };
-                            JOptionPane.showMessageDialog(
-                                null, message, "Liste des news recherchées",JOptionPane.YES_OPTION);
+                           listDialog.setVisible(false);
+                           String news = list.getSelectedValue().toString();
+                           Enumeration enm = BDNews.elements();
+                           News n = (News) BDNews.firstElement();
+                           while(enm.hasMoreElements())
+                           {
+                               n = (News) enm.nextElement();
+                               if(news.equals(n.getTitre()))
+                               {
+                                    break;
+                               }
+                           }
+                            Object[] message = {"Titre : "+n.getTitre(),"Texte : "+n.getTexte()};
+                            Object[] options = {"OK"};
+                            JOptionPane.showOptionDialog(
+                                null, message, "Liste des news recherchées",JOptionPane.OK_OPTION,JOptionPane.PLAIN_MESSAGE,null,options,options[0]);
                        }
                     }
                  });
                 
-                waitDialog.getContentPane().add( list );
-                waitDialog.pack();
+                listDialog.getContentPane().add( list );
+                listDialog.pack();
                 Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-                waitDialog.setLocation(dim.width/2-waitDialog.getSize().width/2, dim.height/2-waitDialog.getSize().height/2);
-                waitDialog.setVisible(true);
-                
-                
-                Object[] options = {""};
-                        // On utilise showOptionDialog(), qui propose l'interface la plus complète :
-                
+                listDialog.setLocation(dim.width/2-listDialog.getSize().width/2, dim.height/2-listDialog.getSize().height/2);
+                listDialog.setVisible(true);
             }
             else
             {
@@ -503,6 +495,87 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuItemRechMotCleActionPerformed
+
+    private void jMenuParamDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuParamDateActionPerformed
+        JPanel panelPays = new JPanel();
+        panelPays.setLayout(new BoxLayout(panelPays,BoxLayout.Y_AXIS));
+        panelPays.setAlignmentX(LEFT_ALIGNMENT);
+        JLabel JlabelPays = new JLabel("Choisissez le nouvel affichage de la date et heure :");
+        JlabelPays.setAlignmentX(LEFT_ALIGNMENT);
+        JComboBox<String> comboboxPays = new JComboBox<String>();
+        comboboxPays.setMaximumSize(new Dimension(200,50));
+        comboboxPays.addItem("France");
+        comboboxPays.addItem("Royaume-Uni");
+        comboboxPays.addItem("Allemagne");
+        comboboxPays.addItem("Italie");
+        comboboxPays.addItem("U.S.A.");
+        panelPays.add(JlabelPays);
+        panelPays.add(comboboxPays);
+        
+        JPanel panelDate = new JPanel();
+        panelDate.setLayout(new BoxLayout(panelDate,BoxLayout.Y_AXIS));
+        panelDate.setAlignmentX(LEFT_ALIGNMENT);
+        JLabel JlabelDate = new JLabel("Choisissez le nouvel affichage de la date :");
+        JlabelDate.setAlignmentX(LEFT_ALIGNMENT);
+        JComboBox<String> comboboxDate = new JComboBox<String>();
+        comboboxDate.setMaximumSize(new Dimension(200,50));
+        comboboxDate.addItem("FULL");
+        comboboxDate.addItem("LONG");
+        comboboxDate.addItem("MEDIUM");
+        comboboxDate.addItem("SHORT");
+        panelDate.add(JlabelDate);
+        panelDate.add(comboboxDate);
+        
+        JPanel panelHeure = new JPanel();
+        panelHeure.setLayout(new BoxLayout(panelHeure,BoxLayout.Y_AXIS));
+        panelHeure.setAlignmentX(LEFT_ALIGNMENT);
+        JLabel JlabelHeure = new JLabel("Choisissez le nouvel affichage de l'heure :");
+        JlabelHeure.setAlignmentX(LEFT_ALIGNMENT);
+        JComboBox<String> comboboxHeure = new JComboBox<String>();
+        comboboxHeure.setMaximumSize(new Dimension(200,50));
+        comboboxHeure.addItem("FULL");
+        comboboxHeure.addItem("LONG");
+        comboboxHeure.addItem("MEDIUM");
+        comboboxHeure.addItem("SHORT");
+        panelHeure.add(JlabelHeure);
+        panelHeure.add(comboboxHeure);
+        
+        Object[] message = {panelPays,panelDate,panelHeure};
+        String[] options = new String[]{"OK", "Annuler"};
+        int dialog = JOptionPane.showOptionDialog(null,message , "Paramètre date-heure",
+                0, JOptionPane.PLAIN_MESSAGE,
+                null, options, options[0]);
+        if(dialog == JOptionPane.OK_OPTION)
+        {
+            Date aujourdhui = new Date();
+            Locale varloc=Locale.ROOT;
+            int idPays = comboboxPays.getSelectedIndex();
+            switch(idPays)
+            {
+                case 0:
+                    varloc = Locale.FRANCE;
+                    break;
+                case 1:
+                    varloc = Locale.UK;
+                    break;
+                case 2:
+                    varloc = Locale.GERMANY;
+                    break;
+                case 3:
+                    varloc = Locale.ITALY;
+                    break;
+                case 4:
+                    varloc = Locale.US;
+                    break;
+
+            }
+            int idDate = comboboxDate.getSelectedIndex();
+            int idHeure = comboboxHeure.getSelectedIndex();
+            DateFormat dateFormat = DateFormat.getDateTimeInstance(idDate,idHeure,varloc);
+            
+            jLabelDate.setText(dateFormat.format(aujourdhui));
+        }
+    }//GEN-LAST:event_jMenuParamDateActionPerformed
 
     /**
      * @param args the command line arguments
@@ -575,6 +648,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemRechCat;
     private javax.swing.JMenuItem jMenuItemRechMotCle;
     private javax.swing.JMenuItem jMenuItemStartReception;
+    private javax.swing.JMenuItem jMenuParamDate;
     private javax.swing.JMenu jMenuRech;
     private javax.swing.JMenu jMenuUsers;
     private javax.swing.JRadioButton jRadioButtonInter;
