@@ -50,6 +50,11 @@ public class LoginJDialog extends javax.swing.JDialog {
         jButtonAnnuler = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jLabelwelcome.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         jLabelwelcome.setText("Bienvenue !");
@@ -129,8 +134,8 @@ public class LoginJDialog extends javax.swing.JDialog {
         login = jTextLogin.getText();
         String passwd = new String(jTextMdp.getPassword());
         if (journaliste.containsKey(login)&&journaliste.containsValue(passwd)) {
-            nomJ = new Journaliste();
-            nomJ.setJournaliste(login);
+            //nomJ = new Journaliste();
+            //nomJ.setJournaliste(login);
             this.setVisible(false);
         }
         else
@@ -145,8 +150,13 @@ public class LoginJDialog extends javax.swing.JDialog {
     private void jButtonAnnulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnnulerActionPerformed
         jTextLogin.setText("");
         jTextMdp.setText("");
-        this.dispose();
+        login ="";
+        this.setVisible(false);
     }//GEN-LAST:event_jButtonAnnulerActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        login="";
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
