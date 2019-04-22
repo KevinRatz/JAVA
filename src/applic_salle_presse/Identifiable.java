@@ -10,5 +10,5 @@ package applic_salle_presse;
  * @author Kevin
  */
 public interface Identifiable {
-    
+    int _num=1;
 }
