@@ -6,9 +6,8 @@
 
 package applic_salle_presse;
 
-import java.awt.Font;
-import java.awt.Frame;
-import java.util.Hashtable;
+import java.awt.*;
+import java.util.*;
 import javax.swing.*;
 
 /**
@@ -18,19 +17,16 @@ import javax.swing.*;
 public class LoginJDialog extends javax.swing.JDialog {
 
     /** Creates new form LoginJDialog */
-    static Hashtable journaliste = new Hashtable();
+    
     public String login;
-    Journaliste nomJ;
-    public Applic_Salle_Presse app;
-    public LoginJDialog(java.awt.Frame parent, boolean modal) {
+    static Hashtable htJournalisteTemp = new Hashtable();
+    public LoginJDialog(java.awt.Frame parent, boolean modal, Hashtable journaliste) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
         setTitle("Login");
-        journaliste.put("lopezdimitri","ld");
-        journaliste.put("dupuisalix","da");
-        journaliste.put("alexispierre","ap");
         
+        htJournalisteTemp = journaliste;
     }
     /** This method is called from within the constructor to
      * initialize the form.
@@ -131,11 +127,18 @@ public class LoginJDialog extends javax.swing.JDialog {
 
     private void jButtonOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOkActionPerformed
 
-        login = jTextLogin.getText();
+        String log = jTextLogin.getText();
         String passwd = new String(jTextMdp.getPassword());
-        if (journaliste.containsKey(login)&&journaliste.containsValue(passwd)) {
-            //nomJ = new Journaliste();
-            //nomJ.setJournaliste(login);
+        
+        boolean ok=false;
+        Enumeration enumeration = htJournalisteTemp.keys();
+        while(enumeration.hasMoreElements()) {
+            Object key = enumeration.nextElement();
+            if (key.equals(log)&&htJournalisteTemp.get(key).equals(passwd))
+                ok=true;
+        }
+        if(ok) {
+            login=log;
             this.setVisible(false);
         }
         else
@@ -150,7 +153,6 @@ public class LoginJDialog extends javax.swing.JDialog {
     private void jButtonAnnulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnnulerActionPerformed
         jTextLogin.setText("");
         jTextMdp.setText("");
-        login ="";
         this.setVisible(false);
     }//GEN-LAST:event_jButtonAnnulerActionPerformed
 
@@ -185,7 +187,7 @@ public class LoginJDialog extends javax.swing.JDialog {
         }
         //</editor-fold>
 
-        /* Create and display the dialog */
+        /* Create and display the dialog 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 LoginJDialog dialog = new LoginJDialog(new javax.swing.JFrame(), true);
@@ -197,7 +199,7 @@ public class LoginJDialog extends javax.swing.JDialog {
                 });
                 dialog.setVisible(true);
             }
-        });
+        });*/
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
