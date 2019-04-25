@@ -114,7 +114,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jComboBoxNews = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        jTextFieldAddNews = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jButtonTraiter = new javax.swing.JButton();
         jButtonAdd = new javax.swing.JButton();
@@ -179,8 +179,18 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         });
 
         jButtonAdd.setText("Ajouter");
+        jButtonAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAddActionPerformed(evt);
+            }
+        });
 
         jButtonSupp.setText("Supprimer");
+        jButtonSupp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSuppActionPerformed(evt);
+            }
+        });
 
         jRadioButtonInter.setText("Internationales");
 
@@ -318,7 +328,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                             .addComponent(jLabel1))
                         .addGap(25, 25, 25)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField1)
+                            .addComponent(jTextFieldAddNews)
                             .addComponent(jComboBoxNews, 0, 150, Short.MAX_VALUE)
                             .addComponent(jLabelNomJ, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -398,18 +408,17 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldAddNews, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButtonAdd))
-                        .addGap(33, 33, 33)
-                        .addComponent(jButtonSupp)
                         .addGap(18, 18, 18)
+                        .addComponent(jButtonSupp)
+                        .addGap(33, 33, 33)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jRadioButtonInter, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jRadioButtonPolitique, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jRadioButtonRagot, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jRadioButtonSports))))
+                                .addComponent(jRadioButtonSports)))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane2)
@@ -434,15 +443,18 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
    
     
     private void jButtonTraiterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTraiterActionPerformed
-        JDialogTraitementNews jdtn =  new JDialogTraitementNews(this, rootPaneCheckingEnabled);
-        jdtn.setModalityType(ModalityType.APPLICATION_MODAL);
-        jdtn.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        jdtn.setVisible(true);
-        
-        /*JOptionPane.showConfirmDialog(null, options,
-                "Don't forget to Tick it!",
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-*/
+        if(!jComboBoxNews.getSelectedItem().toString().equals(""))
+        {
+            JDialogTraitementNews jdtn =  new JDialogTraitementNews(this, rootPaneCheckingEnabled,jComboBoxNews.getSelectedItem().toString());
+            jdtn.setModalityType(ModalityType.APPLICATION_MODAL);
+            jdtn.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            jdtn.setVisible(true);
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "Veuillez entrer un titre de news avant","Erreur News",
+                JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_jButtonTraiterActionPerformed
 
     private void jMenuItemLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLoginActionPerformed
@@ -747,6 +759,14 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItemRechCatActionPerformed
 
+    private void jButtonSuppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSuppActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonSuppActionPerformed
+
+    private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonAddActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -833,6 +853,6 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextFieldAddNews;
     // End of variables declaration//GEN-END:variables
 }
