@@ -8,6 +8,8 @@ package applic_salle_presse;
 import java.awt.Dialog.ModalityType;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
 import java.util.*;
 import javax.swing.*;
@@ -26,6 +28,10 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     static Hashtable htMotCle = new Hashtable();
     static Hashtable htJournaliste = new Hashtable();
     static Hashtable htNews = new Hashtable();
+    static Vector vNewsInter;
+    static Vector vNewsViePolitique;
+    static Vector vNewsInfoSport;
+    static Vector vNewsRagotPotin;
     public Applic_Salle_Presse() {
         initComponents();
         setTitle("\"Le clairon rapporteur\" - Le journal de l'élite qui aime savoir");
@@ -65,12 +71,6 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         java.net.URL imageURL = this.getClass().getResource("black_diamond.png");
         jMenuItemStartReception.setIcon(new ImageIcon(imageURL));
                 
-        String[] matieres = {"Informatique", "Mécanique", "Gestion", "Electricité"};
-        jComboBoxNews.addItem(matieres[0]);
-        jComboBoxNews.addItem(matieres[1]);
-        jComboBoxNews.addItem(matieres[2]);
-        jComboBoxNews.addItem(matieres[3]);
-        
         // grouper radiobutton
         ButtonGroup buttonGroupPreferences = new ButtonGroup();
         buttonGroupPreferences.add(jRadioButtonInter);
@@ -83,14 +83,15 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         htMotCle.put("Mécanique","Meca-Mecanique");
         htMotCle.put("coucou","Info/Information");
         
-        newNews = new News("calmant","");
-        Vector vNewsInter = new Vector();
-        Vector vNewsViePolitique = new Vector();
-        vNewsInter.add(newNews);
-        vNewsInter.add(new News("roi philippe",""));
+        vNewsInter = new Vector();
+        vNewsViePolitique = new Vector();
+        vNewsInfoSport = new Vector();
+        vNewsRagotPotin = new Vector();
+        
         htNews.put("Internationales", vNewsInter);
         htNews.put("Vie politique", vNewsViePolitique);
-        
+        htNews.put("Infos sports", vNewsInfoSport);
+        htNews.put("Ragots et potins", vNewsRagotPotin);
         
         Vector listNews = new Vector();
         for(int i=0; i < vNewsInter.size(); i++)
@@ -98,7 +99,25 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
             News o = (News) vNewsInter.elementAt(i);
             listNews.add(o.getTitre());
         }
+        PropertyChangeListener propChangeList = new PropertyChangeListener() {
+ 
+@Override
+ 
+public void propertyChange(PropertyChangeEvent event) {
+ 
+    String property = event.getPropertyName();
+ 
+    event.getNewValue();
+ 
+    }
+ 
+  };
+        jListInter.addPropertyChangeListener(propChangeList);
         jListInter.setListData(listNews);
+        if(jLabelNomJ.getText().equals(""))
+        {
+            jTextFieldAddNews.setEditable(false);
+        }
     }
 
     /**
@@ -338,11 +357,13 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(jLabelDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(224, 224, 224)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jButtonTraiter)
-                                    .addComponent(jButtonSupp)
-                                    .addComponent(jButtonAdd))
+                                .addGap(222, 222, 222)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jRadioButtonSports)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jButtonTraiter)
+                                        .addComponent(jButtonSupp)
+                                        .addComponent(jButtonAdd)))
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -350,29 +371,23 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                         .addGap(115, 115, 115)
                         .addComponent(jRadioButtonPolitique)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(72, 72, 72)
                                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(27, 27, 27))
-                            .addGroup(layout.createSequentialGroup()
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(30, 30, 30)
-                                .addComponent(jRadioButtonSports)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jRadioButtonRagot)
                                 .addGap(40, 40, 40))))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButtonEdit)
-                .addGap(373, 373, 373))
             .addComponent(jSeparator1)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
+                        .addGap(36, 36, 36)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(62, 62, 62)
+                        .addGap(55, 55, 55)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(94, 94, 94)
@@ -386,47 +401,49 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonSend)))
                 .addContainerGap(89, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButtonEdit)
+                .addGap(373, 373, 373))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(31, 31, 31)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel1)
-                                .addComponent(jLabel4)
-                                .addComponent(jLabelDate, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabelNomJ, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(jComboBoxNews, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButtonTraiter))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(jTextFieldAddNews, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButtonAdd))
-                        .addGap(18, 18, 18)
-                        .addComponent(jButtonSupp)
-                        .addGap(33, 33, 33)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jRadioButtonInter, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jRadioButtonPolitique, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jRadioButtonRagot, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jRadioButtonSports)))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane2)
-                            .addComponent(jScrollPane1)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(34, 34, 34)
-                .addComponent(jButtonEdit)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(jLabel4)
+                        .addComponent(jLabelDate, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabelNomJ, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jComboBoxNews, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonTraiter))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jTextFieldAddNews, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonAdd))
+                .addGap(18, 18, 18)
+                .addComponent(jButtonSupp)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jRadioButtonInter, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jRadioButtonPolitique, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jRadioButtonRagot)
+                        .addComponent(jRadioButtonSports)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jButtonEdit)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -435,7 +452,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                     .addComponent(jButtonConfRecep)
                     .addComponent(jLabel5)
                     .addComponent(jButtonSend))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -443,7 +460,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
    
     
     private void jButtonTraiterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTraiterActionPerformed
-        if(!jComboBoxNews.getSelectedItem().toString().equals(""))
+        if(jComboBoxNews.getItemCount()>0)
         {
             JDialogTraitementNews jdtn =  new JDialogTraitementNews(this, rootPaneCheckingEnabled,jComboBoxNews.getSelectedItem().toString());
             jdtn.setModalityType(ModalityType.APPLICATION_MODAL);
@@ -452,7 +469,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         }
         else
         {
-            JOptionPane.showMessageDialog(null, "Veuillez entrer un titre de news avant","Erreur News",
+            JOptionPane.showMessageDialog(null, "Veuillez entrer un titre de news avant si la liste de news reçue est vide","Erreur News",
                 JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_jButtonTraiterActionPerformed
@@ -463,6 +480,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         l.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         l.setVisible(true);
         jLabelNomJ.setText(l.login);
+        jTextFieldAddNews.setEditable(true);
     }//GEN-LAST:event_jMenuItemLoginActionPerformed
 
     private void jMenuItemLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLogoutActionPerformed
@@ -760,11 +778,21 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemRechCatActionPerformed
 
     private void jButtonSuppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSuppActionPerformed
-        // TODO add your handling code here:
+        jComboBoxNews.removeItem(jComboBoxNews.getSelectedItem());
     }//GEN-LAST:event_jButtonSuppActionPerformed
 
     private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
-        // TODO add your handling code here:
+        String titreNews = jTextFieldAddNews.getText();
+        if(titreNews.equals(""))
+        {
+            JOptionPane.showMessageDialog(this, "Veuillez entre un titre de news dans le champ news avant", "Erreur :(", JOptionPane.WARNING_MESSAGE);
+        }
+        else
+        {
+            jComboBoxNews.addItem(titreNews);
+            jComboBoxNews.setSelectedItem(titreNews);
+            jTextFieldAddNews.setText("");
+        }
     }//GEN-LAST:event_jButtonAddActionPerformed
 
     /**

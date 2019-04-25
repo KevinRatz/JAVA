@@ -17,6 +17,7 @@ public class JDialogTraitementNews extends javax.swing.JDialog {
     /**
      * Creates new form JDialogTraitementNews
      */
+    ButtonGroup buttonGroupPreferences = new ButtonGroup();
     public JDialogTraitementNews(java.awt.Frame parent, boolean modal, String titreNews) {
         super(parent, modal);
         initComponents();
@@ -25,13 +26,14 @@ public class JDialogTraitementNews extends javax.swing.JDialog {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
         
-        ButtonGroup buttonGroupPreferences = new ButtonGroup();
+        //regrouper radio button
         buttonGroupPreferences.add(jRadioButtonInter);
         buttonGroupPreferences.add(jRadioButtonPolitique);
         buttonGroupPreferences.add(jRadioButtonRagot);
         buttonGroupPreferences.add(jRadioButtonSports);
         
         jLabelNomNews.setText(titreNews);
+        jRadioButtonInter.setSelected(true);
     }
 
     /**
@@ -78,6 +80,11 @@ public class JDialogTraitementNews extends javax.swing.JDialog {
         jLabel3.setText("Mot clé :");
 
         jButtonAddMotCle.setText("+");
+        jButtonAddMotCle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAddMotCleActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Mots clé :");
 
@@ -88,8 +95,18 @@ public class JDialogTraitementNews extends javax.swing.JDialog {
         jScrollPane1.setViewportView(jTextAreaCom);
 
         jButtonOk.setText("Ok");
+        jButtonOk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonOkActionPerformed(evt);
+            }
+        });
 
         jButtonAnnuler.setText("Annuler");
+        jButtonAnnuler.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAnnulerActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -175,6 +192,29 @@ public class JDialogTraitementNews extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButtonOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOkActionPerformed
+        String com = jTextAreaCom.getText();
+        String titreNews = jLabelNomNews.getText();
+        if(jRadioButtonInter.isSelected())
+            Applic_Salle_Presse.vNewsInter.add(new News(titreNews,com));
+        else if(jRadioButtonPolitique.isSelected())
+            Applic_Salle_Presse.vNewsViePolitique.add(new News(titreNews,com));
+        else if(jRadioButtonSports.isSelected())
+            Applic_Salle_Presse.vNewsInfoSport.add(new News(titreNews,com));
+        else
+            Applic_Salle_Presse.vNewsRagotPotin.add(new News(titreNews,com));
+        
+        this.setVisible(false);
+    }//GEN-LAST:event_jButtonOkActionPerformed
+
+    private void jButtonAnnulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnnulerActionPerformed
+        
+    }//GEN-LAST:event_jButtonAnnulerActionPerformed
+
+    private void jButtonAddMotCleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddMotCleActionPerformed
+        
+    }//GEN-LAST:event_jButtonAddMotCleActionPerformed
 
     /**
      * @param args the command line arguments
