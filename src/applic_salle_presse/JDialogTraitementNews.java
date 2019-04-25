@@ -17,7 +17,7 @@ public class JDialogTraitementNews extends javax.swing.JDialog {
     /**
      * Creates new form JDialogTraitementNews
      */
-    public JDialogTraitementNews(java.awt.Frame parent, boolean modal) {
+    public JDialogTraitementNews(java.awt.Frame parent, boolean modal, String titreNews) {
         super(parent, modal);
         initComponents();
         
@@ -30,6 +30,8 @@ public class JDialogTraitementNews extends javax.swing.JDialog {
         buttonGroupPreferences.add(jRadioButtonPolitique);
         buttonGroupPreferences.add(jRadioButtonRagot);
         buttonGroupPreferences.add(jRadioButtonSports);
+        
+        jLabelNomNews.setText(titreNews);
     }
 
     /**
@@ -201,7 +203,7 @@ public class JDialogTraitementNews extends javax.swing.JDialog {
         }
         //</editor-fold>
 
-        /* Create and display the dialog */
+        /* Create and display the dialog 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 JDialogTraitementNews dialog = new JDialogTraitementNews(new javax.swing.JFrame(), true);
@@ -213,7 +215,7 @@ public class JDialogTraitementNews extends javax.swing.JDialog {
                 });
                 dialog.setVisible(true);
             }
-        });
+        });*/
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
