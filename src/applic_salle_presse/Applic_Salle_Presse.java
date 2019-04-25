@@ -5,11 +5,8 @@
  */
 package applic_salle_presse;
 
-import java.awt.Component;
 import java.awt.Dialog.ModalityType;
-import java.awt.Dimension;
-import java.awt.PopupMenu;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.*;
 import java.text.DateFormat;
 import java.util.*;
@@ -26,11 +23,17 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
      */
     
     private News newNews;
+    static Hashtable htMotCle = new Hashtable();
+    static Hashtable htJournaliste = new Hashtable();
     static Hashtable htNews = new Hashtable();
-    
     public Applic_Salle_Presse() {
         initComponents();
         setTitle("\"Le clairon rapporteur\" - Le journal de l'élite qui aime savoir");
+        
+        // créer les logins
+        htJournaliste.put("lopezdimitri","ld");
+        htJournaliste.put("dupuisalix","da");
+        htJournaliste.put("alexispierre","ap");
         
         // centrer fenetre
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -76,10 +79,26 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         buttonGroupPreferences.add(jRadioButtonSports);
         
         
-        htNews.put("Informatique","Info-Informatique-IT");
-        htNews.put("Mécanique","Meca-Mecanique");
-        htNews.put("coucou","Info/Information");
-        newNews = new News("coucou","le coucou dit bonjour");
+        htMotCle.put("Informatique","Info-Informatique-IT");
+        htMotCle.put("Mécanique","Meca-Mecanique");
+        htMotCle.put("coucou","Info/Information");
+        
+        newNews = new News("calmant","");
+        Vector vNewsInter = new Vector();
+        Vector vNewsViePolitique = new Vector();
+        vNewsInter.add(newNews);
+        vNewsInter.add(new News("roi philippe",""));
+        htNews.put("Internationales", vNewsInter);
+        htNews.put("Vie politique", vNewsViePolitique);
+        
+        
+        Vector listNews = new Vector();
+        for(int i=0; i < vNewsInter.size(); i++)
+        {
+            News o = (News) vNewsInter.elementAt(i);
+            listNews.add(o.getTitre());
+        }
+        jListInter.setListData(listNews);
     }
 
     /**
@@ -107,7 +126,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jRadioButtonSports = new javax.swing.JRadioButton();
         jRadioButtonRagot = new javax.swing.JRadioButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jListPolitique = new javax.swing.JList<>();
+        jListViePolitique = new javax.swing.JList<>();
         jScrollPane3 = new javax.swing.JScrollPane();
         jListSports = new javax.swing.JList<>();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -174,7 +193,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
 
         jRadioButtonRagot.setText("Ragot et potins");
 
-        jScrollPane2.setViewportView(jListPolitique);
+        jScrollPane2.setViewportView(jListViePolitique);
 
         jScrollPane3.setViewportView(jListSports);
 
@@ -212,9 +231,19 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jMenuUsers.add(jSeparator2);
 
         jMenuItemNew.setText("Nouveau");
+        jMenuItemNew.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemNewActionPerformed(evt);
+            }
+        });
         jMenuUsers.add(jMenuItemNew);
 
         jMenuItemListe.setText("Liste");
+        jMenuItemListe.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemListeActionPerformed(evt);
+            }
+        });
         jMenuUsers.add(jMenuItemListe);
 
         jMenuBar1.add(jMenuUsers);
@@ -240,6 +269,11 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jMenuRech.setText("Recherches");
 
         jMenuItemRechCat.setText("Par catégorie");
+        jMenuItemRechCat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemRechCatActionPerformed(evt);
+            }
+        });
         jMenuRech.add(jMenuItemRechCat);
 
         jMenuItemRechMotCle.setText("Par mot clé");
@@ -294,16 +328,11 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(jLabelDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
+                                .addGap(224, 224, 224)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(224, 224, 224)
-                                        .addComponent(jButtonTraiter))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(224, 224, 224)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jButtonSupp)
-                                            .addComponent(jButtonAdd)
-                                            .addComponent(jRadioButtonSports))))
+                                    .addComponent(jButtonTraiter)
+                                    .addComponent(jButtonSupp)
+                                    .addComponent(jButtonAdd))
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -311,15 +340,18 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                         .addGap(115, 115, 115)
                         .addComponent(jRadioButtonPolitique)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(253, 253, 253)
-                                .addComponent(jRadioButtonRagot))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(72, 72, 72)
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(27, 27, 27))))
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(27, 27, 27))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(30, 30, 30)
+                                .addComponent(jRadioButtonSports)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jRadioButtonRagot)
+                                .addGap(40, 40, 40))))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButtonEdit)
@@ -374,9 +406,10 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jRadioButtonInter, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jRadioButtonPolitique, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jRadioButtonRagot)
-                                .addComponent(jRadioButtonSports)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jRadioButtonRagot, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jRadioButtonSports))))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane2)
@@ -398,13 +431,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    public void Traitement()
-    {
-        //nomJ = new Journaliste();
-        //jLabelNomJ.setText(nomJ);//.getJournaliste());
-    }
-    
+   
     
     private void jButtonTraiterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTraiterActionPerformed
         JDialogTraitementNews jdtn =  new JDialogTraitementNews(this, rootPaneCheckingEnabled);
@@ -419,7 +446,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonTraiterActionPerformed
 
     private void jMenuItemLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLoginActionPerformed
-        LoginJDialog l =  new LoginJDialog(this,rootPaneCheckingEnabled);
+        LoginJDialog l =  new LoginJDialog(this,rootPaneCheckingEnabled,htJournaliste);
         l.setModalityType(ModalityType.APPLICATION_MODAL);
         l.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         l.setVisible(true);
@@ -430,7 +457,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jLabelNomJ.setText("");
         Vector vDefauts = new Vector();
         jListInter.setListData(vDefauts);
-        jListPolitique.setListData(vDefauts);
+        jListViePolitique.setListData(vDefauts);
         jListRagot.setListData(vDefauts);
         jListSports.setListData(vDefauts);
     }//GEN-LAST:event_jMenuItemLogoutActionPerformed
@@ -441,8 +468,8 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         {
             String[] splitmot;
             ArrayList listNews = new ArrayList();
-            for(Object item : htNews.keySet()){
-                splitmot=htNews.get(item).toString().split("[-\\/]");
+            for(Object item : htMotCle.keySet()){
+                splitmot=htMotCle.get(item).toString().split("[-\\/]");
                 for (String splitmot1 : splitmot) {
                     if (splitmot1.equals(mcDialog)) {
                         listNews.add(item);
@@ -572,10 +599,153 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
             int idDate = comboboxDate.getSelectedIndex();
             int idHeure = comboboxHeure.getSelectedIndex();
             DateFormat dateFormat = DateFormat.getDateTimeInstance(idDate,idHeure,varloc);
-            
+            if(varloc==Locale.US)
+                dateFormat.setTimeZone(TimeZone.getTimeZone("PST"));
+            else if(varloc==Locale.UK)
+                dateFormat.setTimeZone(TimeZone.getTimeZone("Europe/London"));
             jLabelDate.setText(dateFormat.format(aujourdhui));
         }
     }//GEN-LAST:event_jMenuParamDateActionPerformed
+
+    private void jMenuItemNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemNewActionPerformed
+        JPanel panelNom = new JPanel();
+        panelNom.setLayout(new BoxLayout(panelNom,BoxLayout.Y_AXIS));
+        panelNom.setAlignmentX(LEFT_ALIGNMENT);
+        JLabel JlabelNom = new JLabel("Entrer votre nom suivi de votre prénom :");
+        JlabelNom.setAlignmentX(LEFT_ALIGNMENT);
+        JTextField JtfNom = new JTextField();
+        panelNom.add(JlabelNom);
+        panelNom.add(JtfNom);
+        JPanel panelMdp = new JPanel();
+        panelMdp.setLayout(new BoxLayout(panelMdp,BoxLayout.Y_AXIS));
+        panelMdp.setAlignmentX(LEFT_ALIGNMENT);
+        JLabel JlabelMdp = new JLabel("Entrer votre mot de passe :");
+        JlabelMdp.setAlignmentX(LEFT_ALIGNMENT);
+        JPasswordField JpfMdp = new JPasswordField();
+        panelMdp.add(JlabelMdp);
+        panelMdp.add(JpfMdp);
+        
+        // focus du textfield
+        SwingUtilities.invokeLater(new Runnable() {
+              public void run() {
+                JtfNom.dispatchEvent(
+                  new FocusEvent(JtfNom, FocusEvent.FOCUS_GAINED));
+              }
+            });
+        
+        // affichage dialogue d'ajout htJournaliste
+        Object[] message = {panelNom,panelMdp};
+        boolean ok = false;
+        do {
+            int jdialog = JOptionPane.showConfirmDialog(null, message,
+                    "Nouveau journaliste",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if(jdialog==JOptionPane.OK_OPTION)
+            {
+                if(JtfNom.getText().equals("")||JpfMdp.getPassword()==null)
+                {
+                    JOptionPane.showMessageDialog(this, "Les champs ne peuvent pas être vide !!!", "Erreur création login",JOptionPane.ERROR_MESSAGE);
+                }
+                else
+                {
+                    String nom = JtfNom.getText();
+                    String mdp = new String(JpfMdp.getPassword());
+                    htJournaliste.put(nom, mdp);
+                    ok=true;
+                }
+            }
+            else
+            {
+                ok=true;
+            }
+        }while(!ok);
+    }//GEN-LAST:event_jMenuItemNewActionPerformed
+
+    private void jMenuItemListeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemListeActionPerformed
+        Enumeration enumeration = htJournaliste.keys();
+        while(enumeration.hasMoreElements()) {
+            Object key = enumeration.nextElement();
+            System.out.println("Login : "  + key + "\t\t Mot de passe : "  + htJournaliste.get(key));
+        }
+    }//GEN-LAST:event_jMenuItemListeActionPerformed
+
+    private void jMenuItemRechCatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRechCatActionPerformed
+        JLabel JlabelCat = new JLabel("Choisissez la catégorie de la news à rechercher :");
+        JlabelCat.setAlignmentX(LEFT_ALIGNMENT);
+        JComboBox<String> comboboxCat = new JComboBox<String>();
+        comboboxCat.addItem("Internationales");
+        comboboxCat.addItem("Vie politique");
+        comboboxCat.addItem("Infos Sports");
+        comboboxCat.addItem("Ragots et potins");
+        
+        Object[] message = {JlabelCat,comboboxCat};
+        String[] options = new String[]{"OK", "Annuler"};
+        int dialog = JOptionPane.showOptionDialog(null,message , "Recherche par catégorie",
+                0, JOptionPane.PLAIN_MESSAGE,
+                null, options, options[0]);
+        if(dialog == JOptionPane.OK_OPTION)
+        {
+            Object ob = "";
+            for(Object item : htNews.keySet()){
+                System.out.println(item.toString());
+                
+                System.out.println(comboboxCat.getSelectedItem().toString());
+                if(item.toString().equals(comboboxCat.getSelectedItem().toString()))
+                {
+                    ob = htNews.get(item);
+                    break;
+                }
+            }
+            Vector vNews = new Vector(Arrays.asList(ob));
+            vNews = (Vector) vNews.elementAt(0);
+            Vector listNews = new Vector();
+            for(int i=0; i < vNews.size(); i++)
+            {
+                News o = (News) vNews.elementAt(i);
+                listNews.add(o.getTitre());
+            }
+            
+            if(listNews.isEmpty())
+            {
+                JOptionPane.showMessageDialog(this, "Aucune news trouvées");
+            }
+            else
+            {
+                JList list = new JList(listNews);
+                JDialog listDialog = new JDialog( this, "Liste des news", true );
+                    listDialog.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE);
+
+                    list.addMouseListener(new MouseAdapter() {
+                        public void mouseClicked(MouseEvent me) {
+                           if (me.getClickCount() == 2) {
+                               listDialog.setVisible(false);
+                               String news = list.getSelectedValue().toString();
+                               /*Enumeration enm = BDNews.elements();
+                               News n = (News) BDNews.firstElement();
+                               while(enm.hasMoreElements())
+                               {
+                                   n = (News) enm.nextElement();
+                                   if(news.equals(n.getTitre()))
+                                   {
+                                        break;
+                                   }
+                               }
+                                Object[] message = {"Titre : "+n.getTitre(),"Texte : "+n.getTexte()};
+                                Object[] options = {"OK"};
+                                JOptionPane.showOptionDialog(
+                                    null, message, "Liste des news recherchées",JOptionPane.OK_OPTION,JOptionPane.PLAIN_MESSAGE,null,options,options[0]);*/
+                           }
+                        }
+                     });
+
+                    listDialog.getContentPane().add( list );
+                    listDialog.pack();
+                    Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+                    listDialog.setLocation(dim.width/2-listDialog.getSize().width/2, dim.height/2-listDialog.getSize().height/2);
+                    listDialog.setVisible(true);
+            }
+        }
+    }//GEN-LAST:event_jMenuItemRechCatActionPerformed
 
     /**
      * @param args the command line arguments
@@ -631,9 +801,9 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelDate;
     private javax.swing.JLabel jLabelNomJ;
     private javax.swing.JList<String> jListInter;
-    private javax.swing.JList<String> jListPolitique;
     private javax.swing.JList<String> jListRagot;
     private javax.swing.JList<String> jListSports;
+    private javax.swing.JList<String> jListViePolitique;
     private javax.swing.JMenu jMenuAide;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMenuConnexions;
