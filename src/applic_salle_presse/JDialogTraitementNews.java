@@ -65,13 +65,12 @@ public class JDialogTraitementNews extends javax.swing.JDialog {
         else
             jRadioButtonRagot.setSelected(true);
         DefaultComboBoxModel model = new DefaultComboBoxModel();
-        Vector neww = news.getMotCle();
         if(news.getMotCle()!=null)
             model = new DefaultComboBoxModel(news.getMotCle());
         jComboBoxMotCle.setModel(model);
         jTextAreaCom.setText(news.getTexte());
         nomJ=news.getJournaliste();
-        
+        jCheckBoxImp.setSelected(news.getImportant());
     }
 
     /**
