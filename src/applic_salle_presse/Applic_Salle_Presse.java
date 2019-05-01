@@ -24,18 +24,21 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
      * Creates new form Applic_Salle_Presses
      */
     
-    private News newNews;
+    public Journaliste nomJournaliste;
     static Hashtable htMotCle = new Hashtable();
     static Hashtable htJournaliste = new Hashtable();
     static Hashtable htNews = new Hashtable();
-    static Vector vNewsInter;
-    static Vector vNewsViePolitique;
-    static Vector vNewsInfoSport;
-    static Vector vNewsRagotPotin;
+    static Vector<News> vNewsInter;
+    static Vector<News> vNewsViePolitique;
+    static Vector<News> vNewsInfoSport;
+    static Vector<News> vNewsRagotPotin;
     public Applic_Salle_Presse() {
         initComponents();
         setTitle("\"Le clairon rapporteur\" - Le journal de l'élite qui aime savoir");
         
+        //!!!!!!!! TEMPORAIRE !!!!!!!!
+        nomJournaliste = new Journaliste();
+        nomJournaliste.setLogin("alexispierre");
         // créer les logins
         htJournaliste.put("lopezdimitri","ld");
         htJournaliste.put("dupuisalix","da");
@@ -44,26 +47,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         // centrer fenetre
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
-        
-        //Menu aide
-        JMenuItem jMenuItemLog = new JMenuItem("Afficher le log");
-        jMenuAide.add(jMenuItemLog);
-        JPopupMenu.Separator jSeparator = new JPopupMenu.Separator();
-        jMenuAide.add(jSeparator);
-        JMenuItem jMenuItemAPropos = new JMenuItem("A propos de ...");
-        jMenuItemAPropos.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ev) {
-                JPanel panel = new JPanel();
-                JLabel JlabelNom = new JLabel("<html> Cette application a été dévelopée par : <br> Kevin Ratz <br> Maxime Troisfontaine <br> Date : 31-03-2019.</html>");
-                panel.add(JlabelNom);
-                String[] options = new String[]{"OK"};
-                JOptionPane.showOptionDialog(null, panel, "A propos de cette application",
-                        0, JOptionPane.PLAIN_MESSAGE,
-                        null, options, null);
-            }
-        });
-        jMenuAide.add(jMenuItemAPropos);
-        
+      
         Date aujourdhui = new Date();
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT);
         jLabelDate.setText(dateFormat.format(aujourdhui));
@@ -78,48 +62,41 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         buttonGroupPreferences.add(jRadioButtonRagot);
         buttonGroupPreferences.add(jRadioButtonSports);
         
+        //jTextFieldAddNews.setEditable(false);
         
         htMotCle.put("Informatique","Info-Informatique-IT");
         htMotCle.put("Mécanique","Meca-Mecanique");
         htMotCle.put("coucou","Info/Information");
         
-        vNewsInter = new Vector();
-        vNewsViePolitique = new Vector();
-        vNewsInfoSport = new Vector();
-        vNewsRagotPotin = new Vector();
+        vNewsInter = new Vector<News>();
+        vNewsViePolitique = new Vector<News>();
+        vNewsInfoSport = new Vector<News>();
+        vNewsRagotPotin = new Vector<News>();
         
         htNews.put("Internationales", vNewsInter);
         htNews.put("Vie politique", vNewsViePolitique);
         htNews.put("Infos sports", vNewsInfoSport);
         htNews.put("Ragots et potins", vNewsRagotPotin);
         
-        Vector listNews = new Vector();
-        for(int i=0; i < vNewsInter.size(); i++)
-        {
-            News o = (News) vNewsInter.elementAt(i);
-            listNews.add(o.getTitre());
-        }
-        PropertyChangeListener propChangeList = new PropertyChangeListener() {
- 
-@Override
- 
-public void propertyChange(PropertyChangeEvent event) {
- 
-    String property = event.getPropertyName();
- 
-    event.getNewValue();
- 
-    }
- 
-  };
-        jListInter.addPropertyChangeListener(propChangeList);
-        jListInter.setListData(listNews);
-        if(jLabelNomJ.getText().equals(""))
-        {
-            jTextFieldAddNews.setEditable(false);
-        }
-    }
+        //add allow listener
+        jRadioButtonInter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jListInter.setEnabled(true);
 
+            }
+        });
+
+        //add disallow listener
+        jRadioButtonPolitique.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jListInter.setEnabled(false);
+                jListViePolitique.setEnabled(true);
+            }
+        });
+        // autre bouton
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -179,8 +156,12 @@ public void propertyChange(PropertyChangeEvent event) {
         jMenuItemNewsPeople = new javax.swing.JMenuItem();
         jMenuAide = new javax.swing.JMenu();
         jMenuParamDate = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jSeparator5 = new javax.swing.JPopupMenu.Separator();
+        jMenuItemAPropos = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setText("Journaliste : ");
 
@@ -213,7 +194,9 @@ public void propertyChange(PropertyChangeEvent event) {
 
         jRadioButtonInter.setText("Internationales");
 
+        jListInter.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jListInter.setToolTipText("");
+        jListInter.setEnabled(false);
         jScrollPane1.setViewportView(jListInter);
 
         jRadioButtonPolitique.setText("Vie politique");
@@ -222,13 +205,24 @@ public void propertyChange(PropertyChangeEvent event) {
 
         jRadioButtonRagot.setText("Ragot et potins");
 
+        jListViePolitique.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jListViePolitique.setEnabled(false);
         jScrollPane2.setViewportView(jListViePolitique);
 
+        jListSports.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jListSports.setEnabled(false);
         jScrollPane3.setViewportView(jListSports);
 
+        jListRagot.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jListRagot.setEnabled(false);
         jScrollPane4.setViewportView(jListRagot);
 
         jButtonEdit.setText("Editer");
+        jButtonEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEditActionPerformed(evt);
+            }
+        });
 
         jCheckBoxNews.setText("News reçue !");
 
@@ -239,6 +233,8 @@ public void propertyChange(PropertyChangeEvent event) {
         jLabel5.setText("OU");
 
         jButtonSend.setText("Envoyer message");
+
+        jLabelNomJ.setText("alexispierre");
 
         jMenuUsers.setText("Utilisateurs");
 
@@ -329,6 +325,18 @@ public void propertyChange(PropertyChangeEvent event) {
         });
         jMenuAide.add(jMenuParamDate);
 
+        jMenuItem1.setText("Afficher le log");
+        jMenuAide.add(jMenuItem1);
+        jMenuAide.add(jSeparator5);
+
+        jMenuItemAPropos.setText("A propos");
+        jMenuItemAPropos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemAProposActionPerformed(evt);
+            }
+        });
+        jMenuAide.add(jMenuItemAPropos);
+
         jMenuBar1.add(jMenuAide);
 
         setJMenuBar(jMenuBar1);
@@ -401,10 +409,10 @@ public void propertyChange(PropertyChangeEvent event) {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonSend)))
                 .addContainerGap(89, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(430, 430, 430)
                 .addComponent(jButtonEdit)
-                .addGap(373, 373, 373))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -459,97 +467,374 @@ public void propertyChange(PropertyChangeEvent event) {
     }// </editor-fold>//GEN-END:initComponents
    
     
-    private void jButtonTraiterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTraiterActionPerformed
-        if(jComboBoxNews.getItemCount()>0)
-        {
-            JDialogTraitementNews jdtn =  new JDialogTraitementNews(this, rootPaneCheckingEnabled,jComboBoxNews.getSelectedItem().toString());
-            jdtn.setModalityType(ModalityType.APPLICATION_MODAL);
-            jdtn.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            jdtn.setVisible(true);
-        }
-        else
-        {
-            JOptionPane.showMessageDialog(null, "Veuillez entrer un titre de news avant si la liste de news reçue est vide","Erreur News",
-                JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_jButtonTraiterActionPerformed
-
     private void jMenuItemLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLoginActionPerformed
         LoginJDialog l =  new LoginJDialog(this,rootPaneCheckingEnabled,htJournaliste);
         l.setModalityType(ModalityType.APPLICATION_MODAL);
         l.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         l.setVisible(true);
         jLabelNomJ.setText(l.login);
+        nomJournaliste = new Journaliste();
+        nomJournaliste.setLogin(l.login);
         jTextFieldAddNews.setEditable(true);
-    }//GEN-LAST:event_jMenuItemLoginActionPerformed
-
-    private void jMenuItemLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLogoutActionPerformed
-        jLabelNomJ.setText("");
-        Vector vDefauts = new Vector();
-        jListInter.setListData(vDefauts);
-        jListViePolitique.setListData(vDefauts);
-        jListRagot.setListData(vDefauts);
-        jListSports.setListData(vDefauts);
-    }//GEN-LAST:event_jMenuItemLogoutActionPerformed
-
-    private void jMenuItemRechMotCleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRechMotCleActionPerformed
-        String mcDialog = JOptionPane.showInputDialog("Rechercher une news par un mot clé :");
-        if(!mcDialog.equals(""))
+        Vector<Vector> list = new Vector<Vector>();
+        list.add(vNewsInter);
+        list.add(vNewsInfoSport);
+        list.add(vNewsViePolitique);
+        list.add(vNewsRagotPotin);
+        Vector<JList> vList = new Vector<JList>();
+        vList.add(jListInter);
+        vList.add(jListSports);
+        vList.add(jListViePolitique);
+        vList.add(jListRagot);
+        for(int i=0;i<4;i++)
         {
-            String[] splitmot;
-            ArrayList listNews = new ArrayList();
-            for(Object item : htMotCle.keySet()){
-                splitmot=htMotCle.get(item).toString().split("[-\\/]");
-                for (String splitmot1 : splitmot) {
-                    if (splitmot1.equals(mcDialog)) {
-                        listNews.add(item);
-                        break;
-                    }
-                }
-            }
-            Vector BDNews = new Vector();
-            BDNews.add(newNews);
-            BDNews.add(new News("Informatique","Steve Jobs ce héros"));
-            
-            if(!listNews.isEmpty())
+            DefaultListModel listTitreNews = new DefaultListModel();
+            listTitreNews=RemplirjLists(list.get(i),false);
+            vList.get(i).setModel(listTitreNews);
+        }
+    }//GEN-LAST:event_jMenuItemLoginActionPerformed
+    
+    private DefaultListModel RemplirjLists(Vector temp,boolean rech)
+    {
+        DefaultListModel listNews = new DefaultListModel();
+        for(int i=0; i < temp.size(); i++)
+        {
+            News o = (News) temp.elementAt(i);
+            Vector vMotCle = o.getMotCle();
+            if(rech&&o.getJournaliste().getLogin().equals(nomJournaliste.getLogin())&&vMotCle.size()>0)
             {
-                JList list = new JList(listNews.toArray());
-                JDialog listDialog = new JDialog( this, "Liste des news", true );
-                listDialog.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE);
-                
-                list.addMouseListener(new MouseAdapter() {
-                    public void mouseClicked(MouseEvent me) {
-                       if (me.getClickCount() == 2) {
-                           listDialog.setVisible(false);
-                           String news = list.getSelectedValue().toString();
-                           Enumeration enm = BDNews.elements();
-                           News n = (News) BDNews.firstElement();
-                           while(enm.hasMoreElements())
-                           {
-                               n = (News) enm.nextElement();
-                               if(news.equals(n.getTitre()))
-                               {
-                                    break;
-                               }
-                           }
-                            Object[] message = {"Titre : "+n.getTitre(),"Texte : "+n.getTexte()};
-                            Object[] options = {"OK"};
-                            JOptionPane.showOptionDialog(
-                                null, message, "Liste des news recherchées",JOptionPane.OK_OPTION,JOptionPane.PLAIN_MESSAGE,null,options,options[0]);
-                       }
-                    }
-                 });
-                
-                listDialog.getContentPane().add( list );
-                listDialog.pack();
-                Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-                listDialog.setLocation(dim.width/2-listDialog.getSize().width/2, dim.height/2-listDialog.getSize().height/2);
-                listDialog.setVisible(true);
+                listNews.addElement(o);
+            }
+            else if(o.getJournaliste().getLogin().equals(nomJournaliste.getLogin()))
+                listNews.addElement(o.getTitre());
+        }
+        return listNews;
+    }
+    
+    private void jMenuItemLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLogoutActionPerformed
+        try
+        {
+            if(!jLabelNomJ.getText().isEmpty())
+            {
+                jLabelNomJ.setText("");
+                Vector vDefauts = new Vector();
+                jListInter.setListData(vDefauts);
+                jListViePolitique.setListData(vDefauts);
+                jListRagot.setListData(vDefauts);
+                jListSports.setListData(vDefauts);
+                jTextFieldAddNews.setEditable(false);
             }
             else
             {
-                JOptionPane.showMessageDialog(this, "Aucune news trouvées");
+                throw new LoginException("Pas besoin vous n'etes pas connecté !!!");
             }
+        } catch (LoginException e) {
+            JLabel erreur = new JLabel(e.getErrorMessage());
+            JOptionPane.showMessageDialog(this, erreur, "Info", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItemLogoutActionPerformed
+
+    private void jMenuItemNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemNewActionPerformed
+        JPanel panelNom = new JPanel();
+        panelNom.setLayout(new BoxLayout(panelNom,BoxLayout.Y_AXIS));
+        panelNom.setAlignmentX(LEFT_ALIGNMENT);
+        JLabel JlabelNom = new JLabel("Entrer votre nom suivi de votre prénom :");
+        JlabelNom.setAlignmentX(LEFT_ALIGNMENT);
+        JTextField JtfNom = new JTextField();
+        panelNom.add(JlabelNom);
+        panelNom.add(JtfNom);
+        JPanel panelMdp = new JPanel();
+        panelMdp.setLayout(new BoxLayout(panelMdp,BoxLayout.Y_AXIS));
+        panelMdp.setAlignmentX(LEFT_ALIGNMENT);
+        JLabel JlabelMdp = new JLabel("Entrer votre mot de passe :");
+        JlabelMdp.setAlignmentX(LEFT_ALIGNMENT);
+        JPasswordField JpfMdp = new JPasswordField();
+        panelMdp.add(JlabelMdp);
+        panelMdp.add(JpfMdp);
+        
+        // focus du textfield
+        SwingUtilities.invokeLater(new Runnable() {
+              public void run() {
+                JtfNom.dispatchEvent(
+                  new FocusEvent(JtfNom, FocusEvent.FOCUS_GAINED));
+              }
+            });
+        
+        // affichage dialogue d'ajout htJournaliste
+        Object[] message = {panelNom,panelMdp};
+        boolean ok = false;
+        do {
+            int jdialog = JOptionPane.showConfirmDialog(null, message,
+                    "Nouveau journaliste",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if(jdialog==JOptionPane.OK_OPTION)
+            {
+                if(JtfNom.getText().isEmpty()||JpfMdp.getPassword()==null)
+                {
+                    JOptionPane.showMessageDialog(this, "Les champs ne peuvent pas être vide !!!", "Erreur création login",JOptionPane.ERROR_MESSAGE);
+                }
+                else
+                {
+                    String nom = JtfNom.getText();
+                    String mdp = new String(JpfMdp.getPassword());
+                    htJournaliste.put(nom, mdp);
+                    ok=true;
+                }
+            }
+            else
+            {
+                ok=true;
+            }
+        }while(!ok);
+    }//GEN-LAST:event_jMenuItemNewActionPerformed
+
+    private void jMenuItemListeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemListeActionPerformed
+        Enumeration enumeration = htJournaliste.keys();
+        while(enumeration.hasMoreElements()) {
+            Object key = enumeration.nextElement();
+            System.out.println("Login : "  + key + "\t\t Mot de passe : "  + htJournaliste.get(key));
+        }
+    }//GEN-LAST:event_jMenuItemListeActionPerformed
+
+    private void jButtonSuppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSuppActionPerformed
+        jComboBoxNews.removeItem(jComboBoxNews.getSelectedItem());
+    }//GEN-LAST:event_jButtonSuppActionPerformed
+
+    private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
+        String titreNews = jTextFieldAddNews.getText();
+        if(titreNews.isEmpty())
+        {
+            JOptionPane.showMessageDialog(this, "Veuillez entre un titre de news dans le champ news avant", "Info", JOptionPane.WARNING_MESSAGE);
+        }
+        else
+        {
+            jComboBoxNews.addItem(titreNews);
+            jComboBoxNews.setSelectedItem(titreNews);
+            jTextFieldAddNews.setText("");
+        }
+    }//GEN-LAST:event_jButtonAddActionPerformed
+
+    private void jButtonTraiterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTraiterActionPerformed
+        String news;
+        
+        try
+        {
+            if(!jLabelNomJ.getText().isEmpty()&&jComboBoxNews.getItemCount()>0)
+            {
+                news = jComboBoxNews.getSelectedItem().toString();
+                if(!news.isEmpty())
+                {
+                    JDialogTraitementNews jdtn =  new JDialogTraitementNews(this, rootPaneCheckingEnabled,news,nomJournaliste);
+                    jdtn.setModalityType(ModalityType.APPLICATION_MODAL);
+                    jdtn.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                    jdtn.setVisible(true);
+                    AddjList(jdtn.n);
+                }
+            }
+            else if(jLabelNomJ.getText().isEmpty())
+            {
+                throw new LoginException("Veuillez vous connecter !!!");
+            }
+            else
+                throw new LoginException("Veuillez entrer un titre de news si la liste de news reçue est vide");
+        } catch (LoginException e)
+        {
+            JOptionPane.showMessageDialog(null, e.getErrorMessage(),"Info",
+                JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_jButtonTraiterActionPerformed
+    private void AddjList(News n) {
+        DefaultListModel listNews = new DefaultListModel();
+        if(n!=null)
+        {
+            if(n.getCategorie().equals(Categorie.INTERNATIONAL))
+            {
+                vNewsInter.add(n);
+                listNews = RemplirjLists(vNewsInter, false);
+                jListInter.setModel(listNews);
+            }
+            else if(n.getCategorie().equals(Categorie.POLITIQUE))
+            {    
+                vNewsViePolitique.add(n);
+                listNews = RemplirjLists(vNewsViePolitique, false);
+                jListViePolitique.setModel(listNews);
+            }
+            else if(n.getCategorie().equals(Categorie.SPORT))
+            {
+                vNewsInfoSport.add(n);
+                listNews = RemplirjLists(vNewsInfoSport, false);
+                jListSports.setModel(listNews);
+            }
+            else
+            {
+                vNewsRagotPotin.add(n);
+                listNews = RemplirjLists(vNewsRagotPotin,false);
+                jListRagot.setModel(listNews);
+            }
+            jComboBoxNews.removeItem(jComboBoxNews.getSelectedItem());
+        }
+    }
+    private void jMenuItemRechCatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRechCatActionPerformed
+        try
+        {
+            if(!jLabelNomJ.getText().isEmpty())
+            {
+                JLabel JlabelCat = new JLabel("Choisissez la catégorie de la news à rechercher :");
+                JlabelCat.setAlignmentX(LEFT_ALIGNMENT);
+                JComboBox<String> comboboxCat = new JComboBox<String>();
+                comboboxCat.addItem("Internationales");
+                comboboxCat.addItem("Vie politique");
+                comboboxCat.addItem("Infos sports");
+                comboboxCat.addItem("Ragots et potins");
+
+                Object[] message = {JlabelCat,comboboxCat};
+                String[] options = new String[]{"OK", "Annuler"};
+                int dialog = JOptionPane.showOptionDialog(null,message , "Recherche par catégorie",
+                        0, JOptionPane.PLAIN_MESSAGE,
+                        null, options, options[0]);
+                if(dialog == JOptionPane.OK_OPTION)
+                {
+                    //Recherche la liste des news par la catégorie sélectionné
+                    Object ob = "";
+                    for(Object item : htNews.keySet()){
+                        if(item.toString().equals(comboboxCat.getSelectedItem().toString()))
+                        {
+                            ob = htNews.get(item);
+                            break;
+                        }
+                    }
+                    Vector listNews = new Vector();
+                    if(!ob.equals(""))
+                    {
+                        Vector vNews = new Vector(Arrays.asList(ob));
+                        vNews = (Vector) vNews.elementAt(0);
+
+                        for(int i=0; i < vNews.size(); i++)
+                        {
+                            News o = (News) vNews.elementAt(i);
+                            listNews.add(o);
+                        }
+                    }
+                    if(listNews.isEmpty())
+                    {
+                        JOptionPane.showMessageDialog(this, "Aucune news trouvées","Info", JOptionPane.WARNING_MESSAGE);
+                    }
+                    else
+                    {
+                        JList list = new JList(listNews);
+                        JDialog listDialog = new JDialog( this, "Liste des news", true );
+                            listDialog.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE);
+
+                            list.addMouseListener(new MouseAdapter() {
+                                public void mouseClicked(MouseEvent me) {
+                                   if (me.getClickCount() == 2) {
+                                       listDialog.setVisible(false);
+                                       News news = (News) list.getSelectedValue();
+                                       
+                                        Object[] message = {"Titre : "+news.getTitre(),"Texte : "+news.getTexte()};
+                                        Object[] options = {"OK"};
+                                        JOptionPane.showOptionDialog(
+                                            null, message, "Liste des news recherchées",JOptionPane.OK_OPTION,JOptionPane.PLAIN_MESSAGE,null,options,options[0]);
+                                   }
+                                }
+                             });
+
+                            listDialog.getContentPane().add( list );
+                            listDialog.pack();
+                            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+                            listDialog.setLocation(dim.width/2-listDialog.getSize().width/2, dim.height/2-listDialog.getSize().height/2);
+                            listDialog.setVisible(true);
+                    }
+                }
+            }
+            else
+            {
+                throw new LoginException("Veuillez-vous connecter !!!");
+            }
+        } catch (LoginException e) {
+            JLabel erreur = new JLabel(e.getErrorMessage());
+            JOptionPane.showMessageDialog(this, erreur, "Info", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItemRechCatActionPerformed
+
+    private void jMenuItemRechMotCleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRechMotCleActionPerformed
+        try
+        {
+            Vector listTitreNews = new Vector();
+            if(!jLabelNomJ.getText().isEmpty())
+            {
+                String mcDialog = JOptionPane.showInputDialog("Rechercher une news par un mot clé :");
+                if(mcDialog!=null)
+                {
+                    if(!mcDialog.isEmpty())
+                    {
+                        Vector<Vector> listNews = new Vector<Vector>();
+                        listNews.add(vNewsInter);
+                        listNews.add(vNewsInfoSport);
+                        listNews.add(vNewsViePolitique);
+                        listNews.add(vNewsRagotPotin);
+                        
+                        DefaultListModel listN = new DefaultListModel();
+                        News o;
+                        for(int i=0;i<4;i++)
+                        {
+                            listN = RemplirjLists(listNews.get(i),true);
+                            for(int j=0; j < listN.size(); j++)
+                            {
+                                o = (News) listN.elementAt(j);
+                                Vector vMotCle = new Vector(o.getMotCle());
+                                for(int a=0; a < vMotCle.size(); a++)
+                                {
+                                    if(vMotCle.elementAt(a).equals(mcDialog))
+                                    {
+                                        listTitreNews.add(o);
+                                    }
+                                }
+                            }
+                        }
+                        if(!listTitreNews.isEmpty())
+                        {
+                            JList list = new JList(listTitreNews);
+                            JDialog listDialog = new JDialog( this, "Liste des news", true );
+                            listDialog.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE);
+
+                            list.addMouseListener(new MouseAdapter() {
+                                public void mouseClicked(MouseEvent me) {
+                                    if (me.getClickCount() == 2) {
+                                         listDialog.setVisible(false);
+                                         News news = (News) list.getSelectedValue();
+                                         Object[] message = {"Titre : "+news.getTitre(),"Texte : "+news.getTexte()};
+                                         Object[] options = {"OK"};
+                                         JOptionPane.showOptionDialog(null, message, "Détail de  la news recherchée",JOptionPane.OK_OPTION,
+                                             JOptionPane.PLAIN_MESSAGE,null,options,options[0]);
+                                    }
+                                }
+                             });
+
+                            listDialog.getContentPane().add( list );
+                            listDialog.pack();
+                            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+                            listDialog.setLocation(dim.width/2-listDialog.getSize().width/2, dim.height/2-listDialog.getSize().height/2);
+                            listDialog.setVisible(true);
+                        }
+                        else
+                        {
+                            throw new LoginException("Aucune news trouvées");
+                        }
+                    }
+                    else
+                    {
+                        throw new LoginException("Veuillez entrer un mot-clé !!!");
+                    }
+                }
+            }
+            else
+            {
+                throw new LoginException("Veuillez-vous connecter !!!");
+            }
+        } catch (LoginException e) {
+            JLabel erreur = new JLabel(e.getErrorMessage());
+            JOptionPane.showMessageDialog(this, erreur, "Info", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_jMenuItemRechMotCleActionPerformed
 
@@ -637,163 +922,133 @@ public void propertyChange(PropertyChangeEvent event) {
         }
     }//GEN-LAST:event_jMenuParamDateActionPerformed
 
-    private void jMenuItemNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemNewActionPerformed
-        JPanel panelNom = new JPanel();
-        panelNom.setLayout(new BoxLayout(panelNom,BoxLayout.Y_AXIS));
-        panelNom.setAlignmentX(LEFT_ALIGNMENT);
-        JLabel JlabelNom = new JLabel("Entrer votre nom suivi de votre prénom :");
-        JlabelNom.setAlignmentX(LEFT_ALIGNMENT);
-        JTextField JtfNom = new JTextField();
-        panelNom.add(JlabelNom);
-        panelNom.add(JtfNom);
-        JPanel panelMdp = new JPanel();
-        panelMdp.setLayout(new BoxLayout(panelMdp,BoxLayout.Y_AXIS));
-        panelMdp.setAlignmentX(LEFT_ALIGNMENT);
-        JLabel JlabelMdp = new JLabel("Entrer votre mot de passe :");
-        JlabelMdp.setAlignmentX(LEFT_ALIGNMENT);
-        JPasswordField JpfMdp = new JPasswordField();
-        panelMdp.add(JlabelMdp);
-        panelMdp.add(JpfMdp);
-        
-        // focus du textfield
-        SwingUtilities.invokeLater(new Runnable() {
-              public void run() {
-                JtfNom.dispatchEvent(
-                  new FocusEvent(JtfNom, FocusEvent.FOCUS_GAINED));
-              }
-            });
-        
-        // affichage dialogue d'ajout htJournaliste
-        Object[] message = {panelNom,panelMdp};
-        boolean ok = false;
-        do {
-            int jdialog = JOptionPane.showConfirmDialog(null, message,
-                    "Nouveau journaliste",
-                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-            if(jdialog==JOptionPane.OK_OPTION)
+    private void jMenuItemAProposActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAProposActionPerformed
+        JPanel panel = new JPanel();
+        JLabel JlabelNom = new JLabel("<html> Cette application a été dévelopée par : <br> Kevin Ratz <br> Maxime Troisfontaine <br> Date : 31-03-2019.</html>");
+        panel.add(JlabelNom);
+        String[] options = new String[]{"OK"};
+        JOptionPane.showOptionDialog(null, panel, "A propos de cette application",
+                0, JOptionPane.PLAIN_MESSAGE,
+                null, options, null);
+    }//GEN-LAST:event_jMenuItemAProposActionPerformed
+
+    private void jButtonEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditActionPerformed
+        try
+        {
+            String titreNews="";
+            String cat="";
+            News news = new News();
+            DefaultListModel model;
+            int selectedIndex;
+            if(!jLabelNomJ.getText().isEmpty())
             {
-                if(JtfNom.getText().equals("")||JpfMdp.getPassword()==null)
+                if(!jListInter.isSelectionEmpty()&&jRadioButtonInter.isSelected()||!jListViePolitique.isSelectionEmpty()&&jRadioButtonPolitique.isSelected()||!jListSports.isSelectionEmpty()&&jRadioButtonSports.isSelected()||!jListRagot.isSelectionEmpty()&&jRadioButtonRagot.isSelected())
                 {
-                    JOptionPane.showMessageDialog(this, "Les champs ne peuvent pas être vide !!!", "Erreur création login",JOptionPane.ERROR_MESSAGE);
+                    if(!jListInter.isSelectionEmpty())
+                    {
+                        titreNews = jListInter.getSelectedValue();
+                        cat = "Internationales";
+                    }
+                    else if(!jListViePolitique.isSelectionEmpty())
+                    {
+                        titreNews = jListViePolitique.getSelectedValue();
+                        cat = "Vie politique";
+                    }
+                    else if(!jListSports.isSelectionEmpty())
+                    {
+                        titreNews = jListSports.getSelectedValue();
+                        cat = "Infos sports";
+                    }
+                    else
+                    {
+                        titreNews = jListRagot.getSelectedValue();
+                        cat = "Ragots et potins";
+                    }
+                    Object ob = "";
+                    for(Object item : htNews.keySet()){
+                        if(item.toString().equals(cat))
+                        {
+                            ob = htNews.get(item);
+                            break;
+                        }
+                    }
+                    Vector vNews = new Vector();
+                    int i=0;
+                    if(!ob.equals(""))
+                    {
+                        vNews = new Vector(Arrays.asList(ob));
+                        vNews = (Vector) vNews.elementAt(0);
+
+                        for(i=0; i < vNews.size(); i++)
+                        {
+                            news = (News) vNews.elementAt(i);
+                            if(news.getJournaliste().getLogin().equals(nomJournaliste.getLogin())) {
+                                if (news.getTitre().equals(titreNews)) {
+                                    //vNews.removeElementAt(i);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    JDialogTraitementNews jdtn =new JDialogTraitementNews(this, rootPaneCheckingEnabled, news);
+                    jdtn.setModalityType(ModalityType.APPLICATION_MODAL);
+                    jdtn.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                    jdtn.setVisible(true);
+                    if(jdtn.ok)
+                    {
+                        if(!jListInter.isSelectionEmpty())
+                        {
+                            model = (DefaultListModel) jListInter.getModel();
+                            selectedIndex = jListInter.getSelectedIndex();
+                            if (selectedIndex != -1)
+                                model.remove(selectedIndex);
+                        }
+                        else if(!jListViePolitique.isSelectionEmpty())
+                        {
+                            model = (DefaultListModel) jListViePolitique.getModel();
+                            selectedIndex = jListViePolitique.getSelectedIndex();
+                            if (selectedIndex != -1)
+                                model.remove(selectedIndex);
+                        }
+                        else if(!jListSports.isSelectionEmpty())
+                        {
+                            model = (DefaultListModel) jListSports.getModel();
+                            selectedIndex = jListSports.getSelectedIndex();
+                            if (selectedIndex != -1)
+                                model.remove(selectedIndex);
+                        }
+                        else
+                        {
+                            model = (DefaultListModel) jListRagot.getModel();
+                            selectedIndex = jListRagot.getSelectedIndex();
+                            if (selectedIndex != -1)
+                                model.remove(selectedIndex);
+                        }
+                        vNews.removeElementAt(i);
+                        AddjList(jdtn.n);
+                    }
+                    else
+                    {
+                        jListInter.clearSelection();
+                        jListViePolitique.clearSelection();
+                        jListSports.clearSelection();
+                        jListRagot.clearSelection();
+                    }
                 }
                 else
                 {
-                    String nom = JtfNom.getText();
-                    String mdp = new String(JpfMdp.getPassword());
-                    htJournaliste.put(nom, mdp);
-                    ok=true;
+                    throw new LoginException("Veuillez selectionner une news dans une liste !!!");
                 }
             }
             else
             {
-                ok=true;
+                throw new LoginException("Veuillez-vous connecter !!!");
             }
-        }while(!ok);
-    }//GEN-LAST:event_jMenuItemNewActionPerformed
-
-    private void jMenuItemListeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemListeActionPerformed
-        Enumeration enumeration = htJournaliste.keys();
-        while(enumeration.hasMoreElements()) {
-            Object key = enumeration.nextElement();
-            System.out.println("Login : "  + key + "\t\t Mot de passe : "  + htJournaliste.get(key));
+        } catch (LoginException e) {
+            JLabel erreur = new JLabel(e.getErrorMessage());
+            JOptionPane.showMessageDialog(this, erreur, "Info", JOptionPane.WARNING_MESSAGE);
         }
-    }//GEN-LAST:event_jMenuItemListeActionPerformed
-
-    private void jMenuItemRechCatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRechCatActionPerformed
-        JLabel JlabelCat = new JLabel("Choisissez la catégorie de la news à rechercher :");
-        JlabelCat.setAlignmentX(LEFT_ALIGNMENT);
-        JComboBox<String> comboboxCat = new JComboBox<String>();
-        comboboxCat.addItem("Internationales");
-        comboboxCat.addItem("Vie politique");
-        comboboxCat.addItem("Infos Sports");
-        comboboxCat.addItem("Ragots et potins");
-        
-        Object[] message = {JlabelCat,comboboxCat};
-        String[] options = new String[]{"OK", "Annuler"};
-        int dialog = JOptionPane.showOptionDialog(null,message , "Recherche par catégorie",
-                0, JOptionPane.PLAIN_MESSAGE,
-                null, options, options[0]);
-        if(dialog == JOptionPane.OK_OPTION)
-        {
-            Object ob = "";
-            for(Object item : htNews.keySet()){
-                System.out.println(item.toString());
-                
-                System.out.println(comboboxCat.getSelectedItem().toString());
-                if(item.toString().equals(comboboxCat.getSelectedItem().toString()))
-                {
-                    ob = htNews.get(item);
-                    break;
-                }
-            }
-            Vector vNews = new Vector(Arrays.asList(ob));
-            vNews = (Vector) vNews.elementAt(0);
-            Vector listNews = new Vector();
-            for(int i=0; i < vNews.size(); i++)
-            {
-                News o = (News) vNews.elementAt(i);
-                listNews.add(o.getTitre());
-            }
-            
-            if(listNews.isEmpty())
-            {
-                JOptionPane.showMessageDialog(this, "Aucune news trouvées");
-            }
-            else
-            {
-                JList list = new JList(listNews);
-                JDialog listDialog = new JDialog( this, "Liste des news", true );
-                    listDialog.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE);
-
-                    list.addMouseListener(new MouseAdapter() {
-                        public void mouseClicked(MouseEvent me) {
-                           if (me.getClickCount() == 2) {
-                               listDialog.setVisible(false);
-                               String news = list.getSelectedValue().toString();
-                               /*Enumeration enm = BDNews.elements();
-                               News n = (News) BDNews.firstElement();
-                               while(enm.hasMoreElements())
-                               {
-                                   n = (News) enm.nextElement();
-                                   if(news.equals(n.getTitre()))
-                                   {
-                                        break;
-                                   }
-                               }
-                                Object[] message = {"Titre : "+n.getTitre(),"Texte : "+n.getTexte()};
-                                Object[] options = {"OK"};
-                                JOptionPane.showOptionDialog(
-                                    null, message, "Liste des news recherchées",JOptionPane.OK_OPTION,JOptionPane.PLAIN_MESSAGE,null,options,options[0]);*/
-                           }
-                        }
-                     });
-
-                    listDialog.getContentPane().add( list );
-                    listDialog.pack();
-                    Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-                    listDialog.setLocation(dim.width/2-listDialog.getSize().width/2, dim.height/2-listDialog.getSize().height/2);
-                    listDialog.setVisible(true);
-            }
-        }
-    }//GEN-LAST:event_jMenuItemRechCatActionPerformed
-
-    private void jButtonSuppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSuppActionPerformed
-        jComboBoxNews.removeItem(jComboBoxNews.getSelectedItem());
-    }//GEN-LAST:event_jButtonSuppActionPerformed
-
-    private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
-        String titreNews = jTextFieldAddNews.getText();
-        if(titreNews.equals(""))
-        {
-            JOptionPane.showMessageDialog(this, "Veuillez entre un titre de news dans le champ news avant", "Erreur :(", JOptionPane.WARNING_MESSAGE);
-        }
-        else
-        {
-            jComboBoxNews.addItem(titreNews);
-            jComboBoxNews.setSelectedItem(titreNews);
-            jTextFieldAddNews.setText("");
-        }
-    }//GEN-LAST:event_jButtonAddActionPerformed
+    }//GEN-LAST:event_jButtonEditActionPerformed
 
     /**
      * @param args the command line arguments
@@ -855,9 +1110,11 @@ public void propertyChange(PropertyChangeEvent event) {
     private javax.swing.JMenu jMenuAide;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMenuConnexions;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItemAPropos;
     private javax.swing.JMenuItem jMenuItemListe;
     private javax.swing.JMenuItem jMenuItemLogin;
     private javax.swing.JMenuItem jMenuItemLogout;
@@ -881,6 +1138,7 @@ public void propertyChange(PropertyChangeEvent event) {
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
+    private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JTextField jTextFieldAddNews;
     // End of variables declaration//GEN-END:variables
 }
