@@ -6,6 +6,7 @@
 package applic_salle_presse;
 
 import java.awt.*;
+import java.util.*;
 import javax.swing.*;
 
 /**
@@ -18,7 +19,11 @@ public class JDialogTraitementNews extends javax.swing.JDialog {
      * Creates new form JDialogTraitementNews
      */
     ButtonGroup buttonGroupPreferences = new ButtonGroup();
-    public JDialogTraitementNews(java.awt.Frame parent, boolean modal, String titreNews) {
+    public News n;
+    public boolean ok;
+    private Journaliste nomJ;
+    private Vector<String> motcle;
+    public JDialogTraitementNews(java.awt.Frame parent, boolean modal, String titreNews,Journaliste nomJournaliste) {
         super(parent, modal);
         initComponents();
         
@@ -34,6 +39,39 @@ public class JDialogTraitementNews extends javax.swing.JDialog {
         
         jLabelNomNews.setText(titreNews);
         jRadioButtonInter.setSelected(true);
+        nomJ = nomJournaliste;
+    }
+    public JDialogTraitementNews(java.awt.Frame parent, boolean modal,News news) {
+        super(parent, modal);
+        initComponents();
+        
+        // centrer fenetre
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        
+        //regrouper radio button
+        buttonGroupPreferences.add(jRadioButtonInter);
+        buttonGroupPreferences.add(jRadioButtonPolitique);
+        buttonGroupPreferences.add(jRadioButtonRagot);
+        buttonGroupPreferences.add(jRadioButtonSports);
+        
+        jLabelNomNews.setText(news.getTitre());
+        if(news.getCategorie()==Categorie.INTERNATIONAL)
+            jRadioButtonInter.setSelected(true);
+        else if(news.getCategorie()==Categorie.POLITIQUE)
+            jRadioButtonPolitique.setSelected(true);
+        else if(news.getCategorie()==Categorie.SPORT)
+            jRadioButtonSports.setSelected(true);
+        else
+            jRadioButtonRagot.setSelected(true);
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        Vector neww = news.getMotCle();
+        if(news.getMotCle()!=null)
+            model = new DefaultComboBoxModel(news.getMotCle());
+        jComboBoxMotCle.setModel(model);
+        jTextAreaCom.setText(news.getTexte());
+        nomJ=news.getJournaliste();
+        
     }
 
     /**
@@ -196,24 +234,62 @@ public class JDialogTraitementNews extends javax.swing.JDialog {
     private void jButtonOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOkActionPerformed
         String com = jTextAreaCom.getText();
         String titreNews = jLabelNomNews.getText();
+        Categorie nomCat;
         if(jRadioButtonInter.isSelected())
-            Applic_Salle_Presse.vNewsInter.add(new News(titreNews,com));
+            nomCat = Categorie.INTERNATIONAL;
         else if(jRadioButtonPolitique.isSelected())
-            Applic_Salle_Presse.vNewsViePolitique.add(new News(titreNews,com));
+            nomCat = Categorie.POLITIQUE;
         else if(jRadioButtonSports.isSelected())
-            Applic_Salle_Presse.vNewsInfoSport.add(new News(titreNews,com));
+            nomCat = Categorie.SPORT;
         else
-            Applic_Salle_Presse.vNewsRagotPotin.add(new News(titreNews,com));
+            nomCat = Categorie.POTIN;
         
+        if(jComboBoxMotCle.getItemCount()==0&&!jTextFieldMotCle.getText().isEmpty())
+        {
+            String[] splitmot;
+            splitmot=jTextFieldMotCle.getText().split("[-\\/]");
+
+            motcle = new Vector<String>(Arrays.asList(splitmot));
+        }
+        else if(!jTextFieldMotCle.getText().isEmpty()&&jComboBoxMotCle.getItemCount()>0)
+        {
+            motcle = new Vector<String>();
+            String[] splitmot;
+            splitmot=jTextFieldMotCle.getText().split("[-\\/]");
+            for(int i=0; i < splitmot.length;i++)
+                motcle.add(splitmot[i]);
+            ComboBoxModel model = jComboBoxMotCle.getModel();
+            Vector m = new Vector();
+            for(int i = 0; i < model.getSize(); i++) {
+                motcle.add(model.getElementAt(i).toString());
+            }
+        }
+        else
+        {
+            ComboBoxModel model = jComboBoxMotCle.getModel();
+            Vector m = new Vector();
+            for(int i = 0; i < model.getSize(); i++) {
+                m.add(model.getElementAt(i).toString());
+            }
+            motcle = new Vector<String>(m);
+        }
+        n = new News(titreNews,com,nomCat,nomJ,new Date(),jCheckBoxImp.isSelected(),motcle);
+        ok=true;
         this.setVisible(false);
     }//GEN-LAST:event_jButtonOkActionPerformed
 
     private void jButtonAnnulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnnulerActionPerformed
-        
+        ok=false;
+        this.setVisible(false);
     }//GEN-LAST:event_jButtonAnnulerActionPerformed
 
     private void jButtonAddMotCleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddMotCleActionPerformed
-        
+        String[] splitmot;
+        splitmot=jTextFieldMotCle.getText().split("[-\\/]");
+        for(String s : splitmot)
+            jComboBoxMotCle.addItem(s);
+        jTextFieldMotCle.setText("");
+        motcle = new Vector<String>(Arrays.asList(splitmot));
     }//GEN-LAST:event_jButtonAddMotCleActionPerformed
 
     /**
