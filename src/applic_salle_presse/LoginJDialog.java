@@ -8,6 +8,8 @@ package applic_salle_presse;
 
 import java.awt.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 
 /**
@@ -137,13 +139,17 @@ public class LoginJDialog extends javax.swing.JDialog {
             if (key.equals(log)&&htJournalisteTemp.get(key).equals(passwd))
                 ok=true;
         }
-        if(ok) {
-            login=log;
-            this.setVisible(false);
-        }
-        else
-        {
-            JLabel erreur = new JLabel("Erreur de login !!!");
+        try {
+            if(ok) {
+                login=log;
+                this.setVisible(false);
+            }
+            else
+            {
+                throw new LoginException("Erreur de login !!!");
+            } 
+        } catch (LoginException e) {
+            JLabel erreur = new JLabel(e.getErrorMessage());
             erreur.setFont(new Font("Arial", Font.BOLD, 22));
             java.net.URL image = this.getClass().getResource("BONHOMME_INTERDIT.jpg");
             JOptionPane.showMessageDialog(this, erreur, "Erreur :( grr", JOptionPane.ERROR_MESSAGE,new ImageIcon(image));
