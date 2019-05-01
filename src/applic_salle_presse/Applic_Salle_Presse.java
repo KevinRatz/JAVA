@@ -36,9 +36,9 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         initComponents();
         setTitle("\"Le clairon rapporteur\" - Le journal de l'élite qui aime savoir");
         
-        //!!!!!!!! TEMPORAIRE !!!!!!!!
+        /*!!!!!!!! TEMPORAIRE !!!!!!!!
         nomJournaliste = new Journaliste();
-        nomJournaliste.setLogin("alexispierre");
+        nomJournaliste.setLogin("alexispierre");*/
         // créer les logins
         htJournaliste.put("lopezdimitri","ld");
         htJournaliste.put("dupuisalix","da");
@@ -62,7 +62,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         buttonGroupPreferences.add(jRadioButtonRagot);
         buttonGroupPreferences.add(jRadioButtonSports);
         
-        //jTextFieldAddNews.setEditable(false);
+        jTextFieldAddNews.setEditable(false);
         
         htMotCle.put("Informatique","Info-Informatique-IT");
         htMotCle.put("Mécanique","Meca-Mecanique");
@@ -78,24 +78,55 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         htNews.put("Infos sports", vNewsInfoSport);
         htNews.put("Ragots et potins", vNewsRagotPotin);
         
-        //add allow listener
+        //effet click radio button
         jRadioButtonInter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 jListInter.setEnabled(true);
-
+                jListViePolitique.setEnabled(false);
+                jListSports.setEnabled(false);
+                jListRagot.setEnabled(false);
+                jListViePolitique.clearSelection();
+                jListSports.clearSelection();
+                jListRagot.clearSelection();
             }
         });
-
-        //add disallow listener
         jRadioButtonPolitique.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 jListInter.setEnabled(false);
                 jListViePolitique.setEnabled(true);
+                jListSports.setEnabled(false);
+                jListRagot.setEnabled(false);
+                jListInter.clearSelection();
+                jListSports.clearSelection();
+                jListRagot.clearSelection();
             }
         });
-        // autre bouton
+        jRadioButtonSports.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jListInter.setEnabled(false);
+                jListViePolitique.setEnabled(false);
+                jListSports.setEnabled(true);
+                jListRagot.setEnabled(false);
+                jListInter.clearSelection();
+                jListViePolitique.clearSelection();
+                jListRagot.clearSelection();
+            }
+        });
+        jRadioButtonRagot.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jListInter.setEnabled(false);
+                jListViePolitique.setEnabled(false);
+                jListSports.setEnabled(false);
+                jListRagot.setEnabled(true);
+                jListInter.clearSelection();
+                jListViePolitique.clearSelection();
+                jListSports.clearSelection();
+            }
+        });
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -233,8 +264,6 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jLabel5.setText("OU");
 
         jButtonSend.setText("Envoyer message");
-
-        jLabelNomJ.setText("alexispierre");
 
         jMenuUsers.setText("Utilisateurs");
 
@@ -468,29 +497,42 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
    
     
     private void jMenuItemLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLoginActionPerformed
-        LoginJDialog l =  new LoginJDialog(this,rootPaneCheckingEnabled,htJournaliste);
-        l.setModalityType(ModalityType.APPLICATION_MODAL);
-        l.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        l.setVisible(true);
-        jLabelNomJ.setText(l.login);
-        nomJournaliste = new Journaliste();
-        nomJournaliste.setLogin(l.login);
-        jTextFieldAddNews.setEditable(true);
-        Vector<Vector> list = new Vector<Vector>();
-        list.add(vNewsInter);
-        list.add(vNewsInfoSport);
-        list.add(vNewsViePolitique);
-        list.add(vNewsRagotPotin);
-        Vector<JList> vList = new Vector<JList>();
-        vList.add(jListInter);
-        vList.add(jListSports);
-        vList.add(jListViePolitique);
-        vList.add(jListRagot);
-        for(int i=0;i<4;i++)
+        try
         {
-            DefaultListModel listTitreNews = new DefaultListModel();
-            listTitreNews=RemplirjLists(list.get(i),false);
-            vList.get(i).setModel(listTitreNews);
+            if(!jLabelNomJ.getText().isEmpty())
+            {
+                throw new LoginException("Veuillez d'abord vous déconnecter !!!");
+            }
+            else
+            {
+                LoginJDialog l =  new LoginJDialog(this,rootPaneCheckingEnabled,htJournaliste);
+                l.setModalityType(ModalityType.APPLICATION_MODAL);
+                l.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                l.setVisible(true);
+                jLabelNomJ.setText(l.login);
+                nomJournaliste = new Journaliste();
+                nomJournaliste.setLogin(l.login);
+                jTextFieldAddNews.setEditable(true);
+                Vector<Vector> list = new Vector<Vector>();
+                list.add(vNewsInter);
+                list.add(vNewsInfoSport);
+                list.add(vNewsViePolitique);
+                list.add(vNewsRagotPotin);
+                Vector<JList> vList = new Vector<JList>();
+                vList.add(jListInter);
+                vList.add(jListSports);
+                vList.add(jListViePolitique);
+                vList.add(jListRagot);
+                for(int i=0;i<4;i++)
+                {
+                    DefaultListModel listTitreNews = new DefaultListModel();
+                    listTitreNews=RemplirjLists(list.get(i),false);
+                    vList.get(i).setModel(listTitreNews);
+                }
+            }
+        } catch (LoginException e) {
+            JLabel erreur = new JLabel(e.getErrorMessage());
+            JOptionPane.showMessageDialog(this, erreur, "Info", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_jMenuItemLoginActionPerformed
     
@@ -590,9 +632,10 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
 
     private void jMenuItemListeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemListeActionPerformed
         Enumeration enumeration = htJournaliste.keys();
+        System.out.println("Liste des journalistes enregistrés \n");
         while(enumeration.hasMoreElements()) {
             Object key = enumeration.nextElement();
-            System.out.println("Login : "  + key + "\t\t Mot de passe : "  + htJournaliste.get(key));
+            System.out.println("Login : "  + key); //+ "\t\t Mot de passe : "  + htJournaliste.get(key));
         }
     }//GEN-LAST:event_jMenuItemListeActionPerformed
 
@@ -601,22 +644,33 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonSuppActionPerformed
 
     private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
-        String titreNews = jTextFieldAddNews.getText();
-        if(titreNews.isEmpty())
+        try
         {
-            JOptionPane.showMessageDialog(this, "Veuillez entre un titre de news dans le champ news avant", "Info", JOptionPane.WARNING_MESSAGE);
-        }
-        else
+            if(!jLabelNomJ.getText().isEmpty())
+            {
+                String titreNews = jTextFieldAddNews.getText();
+                if(titreNews.isEmpty())
+                {
+                    JOptionPane.showMessageDialog(this, "Veuillez entre un titre de news dans le champ news avant", "Info", JOptionPane.WARNING_MESSAGE);
+                }
+                else
+                {
+                    jComboBoxNews.addItem(titreNews);
+                    jComboBoxNews.setSelectedItem(titreNews);
+                    jTextFieldAddNews.setText("");
+                }
+            }
+            else
+                throw new LoginException("Veuillez vous connecter !!!");
+        } catch (LoginException e)
         {
-            jComboBoxNews.addItem(titreNews);
-            jComboBoxNews.setSelectedItem(titreNews);
-            jTextFieldAddNews.setText("");
+            JOptionPane.showMessageDialog(null, e.getErrorMessage(),"Info",
+                JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_jButtonAddActionPerformed
 
     private void jButtonTraiterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTraiterActionPerformed
         String news;
-        
         try
         {
             if(!jLabelNomJ.getText().isEmpty()&&jComboBoxNews.getItemCount()>0)
@@ -712,7 +766,8 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                         for(int i=0; i < vNews.size(); i++)
                         {
                             News o = (News) vNews.elementAt(i);
-                            listNews.add(o);
+                            if(o.getJournaliste().getLogin().equals(nomJournaliste.getLogin()))
+                                listNews.add(o);
                         }
                     }
                     if(listNews.isEmpty())
@@ -725,19 +780,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                         JDialog listDialog = new JDialog( this, "Liste des news", true );
                             listDialog.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE);
 
-                            list.addMouseListener(new MouseAdapter() {
-                                public void mouseClicked(MouseEvent me) {
-                                   if (me.getClickCount() == 2) {
-                                       listDialog.setVisible(false);
-                                       News news = (News) list.getSelectedValue();
-                                       
-                                        Object[] message = {"Titre : "+news.getTitre(),"Texte : "+news.getTexte()};
-                                        Object[] options = {"OK"};
-                                        JOptionPane.showOptionDialog(
-                                            null, message, "Liste des news recherchées",JOptionPane.OK_OPTION,JOptionPane.PLAIN_MESSAGE,null,options,options[0]);
-                                   }
-                                }
-                             });
+                            DoubleClickjList(list,listDialog);
 
                             listDialog.getContentPane().add( list );
                             listDialog.pack();
@@ -785,7 +828,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                                 Vector vMotCle = new Vector(o.getMotCle());
                                 for(int a=0; a < vMotCle.size(); a++)
                                 {
-                                    if(vMotCle.elementAt(a).equals(mcDialog))
+                                    if(vMotCle.elementAt(a).equals(mcDialog)&&o.getJournaliste().getLogin().equals(nomJournaliste.getLogin()))
                                     {
                                         listTitreNews.add(o);
                                     }
@@ -798,18 +841,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                             JDialog listDialog = new JDialog( this, "Liste des news", true );
                             listDialog.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE);
 
-                            list.addMouseListener(new MouseAdapter() {
-                                public void mouseClicked(MouseEvent me) {
-                                    if (me.getClickCount() == 2) {
-                                         listDialog.setVisible(false);
-                                         News news = (News) list.getSelectedValue();
-                                         Object[] message = {"Titre : "+news.getTitre(),"Texte : "+news.getTexte()};
-                                         Object[] options = {"OK"};
-                                         JOptionPane.showOptionDialog(null, message, "Détail de  la news recherchée",JOptionPane.OK_OPTION,
-                                             JOptionPane.PLAIN_MESSAGE,null,options,options[0]);
-                                    }
-                                }
-                             });
+                            DoubleClickjList(list,listDialog);
 
                             listDialog.getContentPane().add( list );
                             listDialog.pack();
@@ -837,7 +869,36 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, erreur, "Info", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_jMenuItemRechMotCleActionPerformed
+    
+    private void DoubleClickjList(JList list, JDialog listDialog) {
+        list.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent me) {
+                if (me.getClickCount() == 2) {
+                    listDialog.setVisible(false);
+                    News news = (News) list.getSelectedValue();
+                    String imp,cat;
+                    if(news.getImportant())
+                        imp="oui";
+                    else
+                        imp="non";
+                    if(news.getCategorie().equals(Categorie.INTERNATIONAL))
+                        cat = "Internationales";
+                    else if(news.getCategorie().equals(Categorie.POLITIQUE))
+                        cat = "Vie politique";
+                    else if(news.getCategorie().equals(Categorie.SPORT))
+                        cat = "Infos sports";
+                    else
+                        cat = "Ragots et potins";
 
+                    Object[] message = {"Titre : "+news.getTitre(),"Catégorie : "+cat,"Important : "+imp,"Mots clé : "+news.getMotCle().toString(),"Commentaire : "+news.getTexte()};
+                    Object[] options = {"OK"};
+                     JOptionPane.showOptionDialog(null, message, "Détail de la news recherchée",JOptionPane.OK_OPTION,
+                         JOptionPane.PLAIN_MESSAGE,null,options,options[0]);
+                }
+            }
+         });
+    }
+    
     private void jMenuParamDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuParamDateActionPerformed
         JPanel panelPays = new JPanel();
         panelPays.setLayout(new BoxLayout(panelPays,BoxLayout.Y_AXIS));

@@ -510,9 +510,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabelNomJ">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="alexispierre"/>
-      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabelDate">
     </Component>
