@@ -57,20 +57,29 @@
                   <Color id="Curseur par d&#xe9;faut"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemStartReceptionActionPerformed"/>
+              </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem2">
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemStopReception">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Arr&#xea;ter r&#xe9;ceptions"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemStopReceptionActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator3">
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem3">
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemPorts">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Liste des ports"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemPortsActionPerformed"/>
+              </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem4">
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemMessageRecu">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Liste des messages re&#xe7;us"/>
               </Properties>
@@ -224,27 +233,29 @@
           </Group>
           <Component id="jSeparator1" alignment="0" max="32767" attributes="0"/>
           <Group type="102" attributes="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
                       <Component id="jScrollPane1" min="-2" pref="168" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
                       <Component id="jScrollPane2" min="-2" pref="161" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="94" max="-2" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
                       <Component id="jCheckBoxNews" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
                       <Component id="jButtonLire" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="201" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="jLabelLireNews" min="-2" pref="319" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonConfRecep" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonSend" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="89" max="32767" attributes="0"/>
           </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="430" max="-2" attributes="0"/>
@@ -288,7 +299,7 @@
                       <Component id="jRadioButtonSports" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace type="unrelated" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" max="-2" attributes="0">
                   <Component id="jScrollPane2" alignment="0" pref="120" max="32767" attributes="0"/>
                   <Component id="jScrollPane3" alignment="0" pref="0" max="32767" attributes="0"/>
@@ -306,6 +317,7 @@
                   <Component id="jButtonConfRecep" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonSend" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabelLireNews" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -487,17 +499,24 @@
     <Component class="javax.swing.JCheckBox" name="jCheckBoxNews">
       <Properties>
         <Property name="text" type="java.lang.String" value="News re&#xe7;ue !"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonLire">
       <Properties>
         <Property name="text" type="java.lang.String" value="Lire la news"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonLireActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonConfRecep">
       <Properties>
         <Property name="text" type="java.lang.String" value="Confirmer r&#xe9;ception"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonConfRecepActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel5">
       <Properties>
@@ -508,10 +527,15 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Envoyer message"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonSendActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabelNomJ">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabelDate">
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabelLireNews">
     </Component>
   </SubComponents>
 </Form>

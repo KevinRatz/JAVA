@@ -10,9 +10,16 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.*;
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
+import network.NetworkBasicServer;
+import network.NetworkBasicClient;
 
 /**
  *
@@ -26,31 +33,58 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     
     public Journaliste nomJournaliste;
     static Hashtable htMotCle = new Hashtable();
-    static Hashtable htJournaliste = new Hashtable();
+    //static Hashtable htJournaliste = new Hashtable();
     static Hashtable htNews = new Hashtable();
     static Vector<News> vNewsInter;
     static Vector<News> vNewsViePolitique;
     static Vector<News> vNewsInfoSport;
     static Vector<News> vNewsRagotPotin;
+    
+    int idDate,idHeure,idPays;
+    Date dateApplic;
+    
+    NetworkBasicServer server;
+    NetworkBasicClient client;
+    
     public Applic_Salle_Presse() {
         initComponents();
         setTitle("\"Le clairon rapporteur\" - Le journal de l'élite qui aime savoir");
-        
-        /*!!!!!!!! TEMPORAIRE !!!!!!!!
-        nomJournaliste = new Journaliste();
-        nomJournaliste.setLogin("alexispierre");*/
-        // créer les logins
-        htJournaliste.put("lopezdimitri","ld");
-        htJournaliste.put("dupuisalix","da");
-        htJournaliste.put("alexispierre","ap");
         
         // centrer fenetre
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
       
-        Date aujourdhui = new Date();
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT);
-        jLabelDate.setText(dateFormat.format(aujourdhui));
+        dateApplic = new Date();
+        Locale varloc=Locale.ROOT;
+        
+        String datef = readConfigProperties();
+        if(datef.isEmpty())
+           createConfigProperties(); 
+        String [] split = datef.split("-");
+        switch(Integer.parseInt(split[2]))
+        {
+            case 0:
+                varloc = Locale.FRANCE;
+                break;
+            case 1:
+                varloc = Locale.UK;
+                break;
+            case 2:
+                varloc = Locale.GERMANY;
+                break;
+            case 3:
+                varloc = Locale.ITALY;
+                break;
+            case 4:
+                varloc = Locale.US;
+                break;
+        }
+        DateFormat dateFormat = DateFormat.getDateTimeInstance(Integer.parseInt(split[0]),Integer.parseInt(split[1]),varloc);
+        if(varloc==Locale.US)
+            dateFormat.setTimeZone(TimeZone.getTimeZone("PST"));
+        else if(varloc==Locale.UK)
+            dateFormat.setTimeZone(TimeZone.getTimeZone("Europe/London"));
+        jLabelDate.setText(dateFormat.format(dateApplic));
         
         java.net.URL imageURL = this.getClass().getResource("black_diamond.png");
         jMenuItemStartReception.setIcon(new ImageIcon(imageURL));
@@ -72,6 +106,8 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         vNewsViePolitique = new Vector<News>();
         vNewsInfoSport = new Vector<News>();
         vNewsRagotPotin = new Vector<News>();
+        
+        readNews(vNewsInter,vNewsViePolitique,vNewsInfoSport,vNewsRagotPotin);
         
         htNews.put("Internationales", vNewsInter);
         htNews.put("Vie politique", vNewsViePolitique);
@@ -127,6 +163,8 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                 jListSports.clearSelection();
             }
         });
+        
+        
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -167,6 +205,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jButtonSend = new javax.swing.JButton();
         jLabelNomJ = new javax.swing.JLabel();
         jLabelDate = new javax.swing.JLabel();
+        jLabelLireNews = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuUsers = new javax.swing.JMenu();
         jMenuItemLogin = new javax.swing.JMenuItem();
@@ -176,10 +215,10 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         jMenuItemListe = new javax.swing.JMenuItem();
         jMenuConnexions = new javax.swing.JMenu();
         jMenuItemStartReception = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItemStopReception = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItemPorts = new javax.swing.JMenuItem();
+        jMenuItemMessageRecu = new javax.swing.JMenuItem();
         jMenuRech = new javax.swing.JMenu();
         jMenuItemRechCat = new javax.swing.JMenuItem();
         jMenuItemRechMotCle = new javax.swing.JMenuItem();
@@ -256,14 +295,30 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         });
 
         jCheckBoxNews.setText("News reçue !");
+        jCheckBoxNews.setEnabled(false);
 
         jButtonLire.setText("Lire la news");
+        jButtonLire.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonLireActionPerformed(evt);
+            }
+        });
 
         jButtonConfRecep.setText("Confirmer réception");
+        jButtonConfRecep.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonConfRecepActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("OU");
 
         jButtonSend.setText("Envoyer message");
+        jButtonSend.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSendActionPerformed(evt);
+            }
+        });
 
         jMenuUsers.setText("Utilisateurs");
 
@@ -306,17 +361,32 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
 
         jMenuItemStartReception.setText("Démarrer réceptions");
         jMenuItemStartReception.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jMenuItemStartReception.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemStartReceptionActionPerformed(evt);
+            }
+        });
         jMenuConnexions.add(jMenuItemStartReception);
 
-        jMenuItem2.setText("Arrêter réceptions");
-        jMenuConnexions.add(jMenuItem2);
+        jMenuItemStopReception.setText("Arrêter réceptions");
+        jMenuItemStopReception.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemStopReceptionActionPerformed(evt);
+            }
+        });
+        jMenuConnexions.add(jMenuItemStopReception);
         jMenuConnexions.add(jSeparator3);
 
-        jMenuItem3.setText("Liste des ports");
-        jMenuConnexions.add(jMenuItem3);
+        jMenuItemPorts.setText("Liste des ports");
+        jMenuItemPorts.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemPortsActionPerformed(evt);
+            }
+        });
+        jMenuConnexions.add(jMenuItemPorts);
 
-        jMenuItem4.setText("Liste des messages reçus");
-        jMenuConnexions.add(jMenuItem4);
+        jMenuItemMessageRecu.setText("Liste des messages reçus");
+        jMenuConnexions.add(jMenuItemMessageRecu);
 
         jMenuBar1.add(jMenuConnexions);
 
@@ -420,24 +490,26 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                                 .addGap(40, 40, 40))))))
             .addComponent(jSeparator1)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(36, 36, 36)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(55, 55, 55)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(94, 94, 94)
                         .addComponent(jCheckBoxNews)
                         .addGap(29, 29, 29)
                         .addComponent(jButtonLire)
-                        .addGap(201, 201, 201)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabelLireNews, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonConfRecep)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonSend)))
-                .addContainerGap(89, Short.MAX_VALUE))
+                        .addComponent(jButtonSend)
+                        .addContainerGap())))
             .addGroup(layout.createSequentialGroup()
                 .addGap(430, 430, 430)
                 .addComponent(jButtonEdit)
@@ -472,7 +544,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jRadioButtonRagot)
                         .addComponent(jRadioButtonSports)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -488,13 +560,78 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                     .addComponent(jButtonLire)
                     .addComponent(jButtonConfRecep)
                     .addComponent(jLabel5)
-                    .addComponent(jButtonSend))
+                    .addComponent(jButtonSend)
+                    .addComponent(jLabelLireNews, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
    
+    private void createConfigProperties() {
+        String separator = System.getProperty("file.separator");
+        String home = System.getProperty("user.dir");
+        String chemin = home + separator + "src" + separator + "applic_salle_presse" + separator + "config.properties";
+        try {
+            FileInputStream in = new FileInputStream(chemin);
+            Properties props = new Properties();
+            props.load(in);
+            Enumeration<?> e = props.propertyNames();
+            in.close();
+            String datef;
+            if (!e.hasMoreElements()) {
+                FileOutputStream out = new FileOutputStream(chemin);
+                props.setProperty("FichierProperties", "Login.properties");
+                props.setProperty("FichierNews", "News.txt");
+                props.setProperty("Charleroi", "60001");
+                props.setProperty("Liège", "60002");
+                idDate=3;
+                idHeure=3;
+                idPays=0;
+                datef = idDate + "-"+idHeure+"-"+idPays;
+                props.setProperty("Date", datef);
+                props.store(out, null);
+                out.close();
+            }
+            else
+            {
+                FileOutputStream out = new FileOutputStream(chemin);
+                datef = idDate + "-"+idHeure+"-"+idPays;
+                props.setProperty("Date", datef);
+                props.store(out, null);
+                out.close();
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Fichier de configuration non trouvé !");
+        } catch (IOException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        }
+    }
+    
+    private String readConfigProperties() {
+        String separator = System.getProperty("file.separator");
+        String home = System.getProperty("user.dir");
+        String chemin = home + separator + "src" + separator + "applic_salle_presse" + separator + "config.properties";
+        String value = "";
+        try {
+            FileInputStream in = new FileInputStream(chemin);
+            Properties props = new Properties();
+            props.load(in);
+            Enumeration<?> e = props.propertyNames();
+            while (e.hasMoreElements()) {
+                String key = (String) e.nextElement();
+                if ("Date".equals(key)) {
+                    value = props.getProperty(key);
+                }
+            }
+            in.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Fichier de configuration non trouvé !");
+        } catch (IOException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        }
+        return value;
+    }
     
     private void jMenuItemLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLoginActionPerformed
         try
@@ -505,7 +642,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
             }
             else
             {
-                LoginJDialog l =  new LoginJDialog(this,rootPaneCheckingEnabled,htJournaliste);
+                LoginJDialog l =  new LoginJDialog(this,rootPaneCheckingEnabled);
                 l.setModalityType(ModalityType.APPLICATION_MODAL);
                 l.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
                 l.setVisible(true);
@@ -577,6 +714,11 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemLogoutActionPerformed
 
     private void jMenuItemNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemNewActionPerformed
+        
+        String separator = System.getProperty("file.separator");
+        String home = System.getProperty("user.dir");
+        String chemin = home + separator + "src" + separator + "applic_salle_presse" + separator + "Login.properties";
+
         JPanel panelNom = new JPanel();
         panelNom.setLayout(new BoxLayout(panelNom,BoxLayout.Y_AXIS));
         panelNom.setAlignmentX(LEFT_ALIGNMENT);
@@ -619,8 +761,26 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                 {
                     String nom = JtfNom.getText();
                     String mdp = new String(JpfMdp.getPassword());
-                    htJournaliste.put(nom, mdp);
                     ok=true;
+                    try
+                    {
+                        FileInputStream in = new FileInputStream(chemin);
+                        Properties props = new Properties();
+                        props.load(in);
+                        in.close();
+
+                        FileOutputStream out = new FileOutputStream(chemin);
+                        props.setProperty(nom, mdp);
+                        props.store(out, null);
+                        out.close();
+                    } 
+                    catch (FileNotFoundException e) {
+                    System.out.println("Fichier de serveur non trouvé !");
+                    this.dispose();
+                    } catch (IOException e) {
+                        System.out.println("Erreur : " + e.getMessage());
+                        this.dispose();
+                    }
                 }
             }
             else
@@ -631,11 +791,31 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemNewActionPerformed
 
     private void jMenuItemListeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemListeActionPerformed
-        Enumeration enumeration = htJournaliste.keys();
-        System.out.println("Liste des journalistes enregistrés \n");
-        while(enumeration.hasMoreElements()) {
-            Object key = enumeration.nextElement();
-            System.out.println("Login : "  + key); //+ "\t\t Mot de passe : "  + htJournaliste.get(key));
+        String separator  = System.getProperty("file.separator");
+        String home=System.getProperty("user.dir");
+        String chemin = home+separator+"src"+separator+"applic_salle_presse"+separator+"Login.properties";
+            
+        try
+        {
+            FileInputStream in = new FileInputStream(chemin);
+            Properties props = new Properties();
+            props.load(in);
+            Enumeration<?> e = props.propertyNames();
+            System.out.println("Liste des journalistes enregistrés \n");
+            while (e.hasMoreElements()) {
+                    String key = (String) e.nextElement();
+                    System.out.println("Login : "  + key);
+                    //String value = props.getProperty(key);
+            }
+            in.close();
+        }
+        catch (FileNotFoundException e) { 
+            System.out.println("Fichier de serveur non trouvé !"); 
+            this.dispose();
+        }
+        catch (IOException e) { 
+            System.out.println("Erreur : " + e.getMessage()); 
+            this.dispose();
         }
     }//GEN-LAST:event_jMenuItemListeActionPerformed
 
@@ -683,6 +863,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                     jdtn.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
                     jdtn.setVisible(true);
                     AddjList(jdtn.n);
+                    writeNews(jdtn.n);
                 }
             }
             else if(jLabelNomJ.getText().isEmpty())
@@ -727,6 +908,131 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
             }
             jComboBoxNews.removeItem(jComboBoxNews.getSelectedItem());
         }
+    }
+    private void readNews(Vector<News> vNewsInter,Vector<News> vNewsViePolitique,Vector<News> vNewsInfoSport,Vector<News> vNewsRagotPotin) {
+        Vector listplat = new Vector();
+        try {
+            File file = new File("News.txt");
+            BufferedReader dis = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+
+            String ligne;
+            while ((ligne = dis.readLine()) != null) {
+                String[] splitLigne = ligne.split("&");
+                Categorie cat;
+                if(splitLigne[2].equals("Internationales"))
+                    cat = Categorie.INTERNATIONAL;
+                else if(splitLigne[2].equals("Vie politique"))
+                    cat = Categorie.POLITIQUE;
+                else if(splitLigne[2].equals("Infos sports"))
+                    cat = Categorie.SPORT;
+                else
+                    cat = Categorie.POTIN;
+                Date date = new Date();
+                try {
+                    date =new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(splitLigne[3]);
+                } catch (ParseException ex) {
+                    Logger.getLogger(Applic_Salle_Presse.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                nomJournaliste = new Journaliste();
+                nomJournaliste.setLogin(splitLigne[4]);
+                String motcle = splitLigne[5];
+                motcle = motcle.replaceAll("\\[", "").replaceAll("\\]","");
+                String[] listmotcle = motcle.split(", ");
+                Vector vec = new Vector(Arrays.asList(listmotcle));
+                News n = new News(splitLigne[0], splitLigne[1], cat, nomJournaliste, date , Boolean.parseBoolean(splitLigne[6]), vec);
+                
+                if(n.getCategorie().equals(Categorie.INTERNATIONAL))
+                {
+                    vNewsInter.add(n);
+                }
+                else if(n.getCategorie().equals(Categorie.POLITIQUE))
+                {    
+                    vNewsViePolitique.add(n);
+                }
+                else if(n.getCategorie().equals(Categorie.SPORT))
+                {
+                    vNewsInfoSport.add(n);
+                }
+                else
+                {
+                    vNewsRagotPotin.add(n);
+                }
+            }
+            dis.close();
+        } catch (FileNotFoundException e) {
+            System.err.println("Erreur ! Fichier non trouvé [" + e + "]");
+        } catch (IOException ioe) {
+            System.err.println("Erreur ! ? [" + ioe + "]");
+        }
+    }
+
+    private void writeNews(News n) {
+        FileWriter fw = null;
+        try {
+            String cat;
+            if(n.getCategorie().equals(Categorie.INTERNATIONAL))
+                cat = "Internationales";
+            else if(n.getCategorie().equals(Categorie.POLITIQUE))
+                cat = "Vie politique";
+            else if(n.getCategorie().equals(Categorie.SPORT))
+                cat = "Infos sports";
+            else
+                cat = "Ragots et potins";
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");  
+            String strDate = formatter.format(n.getDate());
+            String sb = n.getTitre()+"&"+ n.getTexte() +"&"+ cat +"&"+ strDate +"&"+ n.getJournaliste().getLogin() +"&"+ n.getMotCle() +"&"+ n.getImportant() + System.getProperty("line.separator");
+            fw = new FileWriter(new File("News.txt"), true);
+            //Write entire string buffer into the file
+            fw.write(sb);
+        } catch (FileNotFoundException e) {
+            System.err.println("Erreur ! Fichier non trouvé [" + e + "]");
+        } catch (IOException ioe) {
+            System.err.println("Erreur pendant écriture" + ioe);
+        } finally {
+            try {
+                if (fw != null) {
+                    fw.close();
+                }
+            } catch (IOException e) {
+                System.out.println("Erreur " + e);
+            }
+        }
+    }
+    private void modifyNews(News n) throws FileNotFoundException, IOException {
+        File inputFile = new File("News.txt");
+        File tempFile = new File("myTempNews.txt");
+
+        BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+        String lineToRemove = n.getTitre();
+        String currentLine;
+        String cat;
+        if(n.getCategorie().equals(Categorie.INTERNATIONAL))
+            cat = "Internationales";
+        else if(n.getCategorie().equals(Categorie.POLITIQUE))
+            cat = "Vie politique";
+        else if(n.getCategorie().equals(Categorie.SPORT))
+            cat = "Infos sports";
+        else
+            cat = "Ragots et potins";
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");  
+        String strDate = formatter.format(new Date());
+        String sb = n.getTitre()+"&"+ n.getTexte() +"&"+ cat +"&"+ strDate +"&"+ n.getJournaliste().getLogin() +"&"+ n.getMotCle() +"&"+ n.getImportant() + System.getProperty("line.separator");
+
+        while((currentLine = reader.readLine()) != null) {
+            // trim newline when comparing with lineToRemove
+            String trimmedLine = currentLine.trim();
+            String[] splitLigne = trimmedLine.split("&");
+            if(splitLigne[0].equals(lineToRemove))
+                writer.write(sb);
+            else
+                writer.write(currentLine + System.getProperty("line.separator"));
+        }
+        writer.close(); 
+        reader.close();
+        inputFile.delete();
+        tempFile.renameTo(inputFile);
     }
     private void jMenuItemRechCatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRechCatActionPerformed
         try
@@ -950,9 +1256,8 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                 null, options, options[0]);
         if(dialog == JOptionPane.OK_OPTION)
         {
-            Date aujourdhui = new Date();
             Locale varloc=Locale.ROOT;
-            int idPays = comboboxPays.getSelectedIndex();
+            idPays = comboboxPays.getSelectedIndex();
             switch(idPays)
             {
                 case 0:
@@ -972,14 +1277,15 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                     break;
 
             }
-            int idDate = comboboxDate.getSelectedIndex();
-            int idHeure = comboboxHeure.getSelectedIndex();
+            idDate = comboboxDate.getSelectedIndex();
+            idHeure = comboboxHeure.getSelectedIndex();
             DateFormat dateFormat = DateFormat.getDateTimeInstance(idDate,idHeure,varloc);
             if(varloc==Locale.US)
                 dateFormat.setTimeZone(TimeZone.getTimeZone("PST"));
             else if(varloc==Locale.UK)
                 dateFormat.setTimeZone(TimeZone.getTimeZone("Europe/London"));
-            jLabelDate.setText(dateFormat.format(aujourdhui));
+            jLabelDate.setText(dateFormat.format(dateApplic));
+            createConfigProperties();
         }
     }//GEN-LAST:event_jMenuParamDateActionPerformed
 
@@ -1045,7 +1351,6 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                             news = (News) vNews.elementAt(i);
                             if(news.getJournaliste().getLogin().equals(nomJournaliste.getLogin())) {
                                 if (news.getTitre().equals(titreNews)) {
-                                    //vNews.removeElementAt(i);
                                     break;
                                 }
                             }
@@ -1087,6 +1392,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
                         }
                         vNews.removeElementAt(i);
                         AddjList(jdtn.n);
+                        modifyNews(jdtn.n);
                     }
                     else
                     {
@@ -1108,8 +1414,73 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
         } catch (LoginException e) {
             JLabel erreur = new JLabel(e.getErrorMessage());
             JOptionPane.showMessageDialog(this, erreur, "Info", JOptionPane.WARNING_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(Applic_Salle_Presse.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButtonEditActionPerformed
+
+    private void jMenuItemStartReceptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemStartReceptionActionPerformed
+        server=new NetworkBasicServer(60001,jCheckBoxNews);
+        /*JDialogApplic_Point_Presse jdtn =  new JDialogApplic_Point_Presse(this, rootPaneCheckingEnabled);
+        jdtn.setModalityType(ModalityType.MODELESS);
+        jdtn.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        jdtn.setVisible(true);*/
+    }//GEN-LAST:event_jMenuItemStartReceptionActionPerformed
+
+    private void jButtonLireActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLireActionPerformed
+        if (jCheckBoxNews.isSelected()) {
+        String list = server.getMessage();
+        jLabelLireNews.setText(">> " + list);
+        if(client==null)
+            client=new NetworkBasicClient("localhost", 60002);
+        }
+    }//GEN-LAST:event_jButtonLireActionPerformed
+
+    private void jButtonConfRecepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConfRecepActionPerformed
+        if(!jLabelLireNews.getText().isEmpty())
+            server.sendMessage("Bien Reçu");
+        
+    }//GEN-LAST:event_jButtonConfRecepActionPerformed
+
+    private void jMenuItemPortsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPortsActionPerformed
+        System.out.println("Port d'Applic_salle_presse : 60001");
+        System.out.println("Port d'Applic_point_presse : 60002");
+    }//GEN-LAST:event_jMenuItemPortsActionPerformed
+
+    private void jMenuItemStopReceptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemStopReceptionActionPerformed
+        server.setEndReceiving();
+    }//GEN-LAST:event_jMenuItemStopReceptionActionPerformed
+
+    private void jButtonSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSendActionPerformed
+        if(!jLabelLireNews.getText().isEmpty())
+        {
+            JLabel JlabelNews = new JLabel("News : ");
+            JLabel JlabelTitre = new JLabel("");
+            JPanel panelNews = new JPanel();
+            panelNews.setLayout(new BoxLayout(panelNews,BoxLayout.X_AXIS));
+            panelNews.setAlignmentX(LEFT_ALIGNMENT);
+            panelNews.add(JlabelNews);
+            panelNews.add(JlabelTitre);
+            
+            JPanel panelRep = new JPanel();
+            panelRep.setLayout(new BoxLayout(panelRep,BoxLayout.X_AXIS));
+            panelRep.setAlignmentX(LEFT_ALIGNMENT);
+            JLabel JlabelReponse = new JLabel("Réponse : ");
+            JTextField JtfRep = new JTextField(20);
+            panelRep.add(JlabelReponse);
+            panelRep.add(JtfRep);
+            
+            Object[] message = {panelNews,panelRep};
+            String[] options = new String[]{"Envoyer", "Annuler"};
+            int dialog = JOptionPane.showOptionDialog(null,message , null,
+                    0, JOptionPane.PLAIN_MESSAGE,
+                    null, options, options[0]);
+            if(dialog == JOptionPane.OK_OPTION)
+            {
+                server.sendMessage(JtfRep.getText());
+            }
+        }
+    }//GEN-LAST:event_jButtonSendActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1163,6 +1534,7 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabelDate;
+    private javax.swing.JLabel jLabelLireNews;
     private javax.swing.JLabel jLabelNomJ;
     private javax.swing.JList<String> jListInter;
     private javax.swing.JList<String> jListRagot;
@@ -1172,18 +1544,18 @@ public class Applic_Salle_Presse extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMenuConnexions;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItemAPropos;
     private javax.swing.JMenuItem jMenuItemListe;
     private javax.swing.JMenuItem jMenuItemLogin;
     private javax.swing.JMenuItem jMenuItemLogout;
+    private javax.swing.JMenuItem jMenuItemMessageRecu;
     private javax.swing.JMenuItem jMenuItemNew;
     private javax.swing.JMenuItem jMenuItemNewsPeople;
+    private javax.swing.JMenuItem jMenuItemPorts;
     private javax.swing.JMenuItem jMenuItemRechCat;
     private javax.swing.JMenuItem jMenuItemRechMotCle;
     private javax.swing.JMenuItem jMenuItemStartReception;
+    private javax.swing.JMenuItem jMenuItemStopReception;
     private javax.swing.JMenuItem jMenuParamDate;
     private javax.swing.JMenu jMenuRech;
     private javax.swing.JMenu jMenuUsers;
